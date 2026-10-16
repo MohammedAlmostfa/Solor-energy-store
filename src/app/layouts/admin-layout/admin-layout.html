@@ -1,0 +1,17 @@
+<header class="admin-header">
+  <a routerLink="/admin" class="admin-brand">لوحة إدارة المتجر</a>
+  <a routerLink="/">العودة إلى المتجر</a>
+</header>
+
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <nav aria-label="قائمة الإدارة">
+      <a routerLink="/admin" [routerLinkActiveOptions]="{ exact: true }"
+         routerLinkActive="active">لوحة المعلومات</a>
+    </nav>
+  </aside>
+
+  <main class="admin-content">
+    <router-outlet />
+  </main>
+</div>

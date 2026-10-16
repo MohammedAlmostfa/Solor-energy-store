@@ -1,0 +1,23 @@
+<header class="store-header">
+  <a class="brand" routerLink="/">
+    <span class="brand-icon" aria-hidden="true">☀</span>
+    <span>طاقة الشمس</span>
+  </a>
+
+  <nav class="store-nav" aria-label="التنقل الرئيسي">
+    <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }"
+       routerLinkActive="active">الرئيسية</a>
+    <a routerLink="/products" routerLinkActive="active">المنتجات</a>
+    <a routerLink="/cart" routerLinkActive="active">السلة</a>
+  </nav>
+
+  <a class="admin-link" routerLink="/admin">الإدارة</a>
+</header>
+
+<main class="store-main">
+  <router-outlet />
+</main>
+
+<footer class="store-footer">
+  <p>طاقة الشمس — حلول الطاقة الشمسية لمنزلك وعملك</p>
+</footer>
