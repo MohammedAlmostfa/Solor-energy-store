@@ -1,0 +1,49 @@
+<section class="product-details container">
+  <a class="back-link" routerLink="/products">
+    ← العودة إلى المنتجات
+  </a>
+
+  @if (product(); as item) {
+    <article class="details-card">
+      <div class="details-image">
+        <img [src]="item.imageUrl" [alt]="item.name" />
+      </div>
+
+      <div class="details-content">
+        <span class="category">
+          {{ categoryLabels[item.category] }}
+        </span>
+
+        <h1>{{ item.name }}</h1>
+
+        <p class="description">{{ item.description }}</p>
+
+        <div class="specification">
+          <span>الاستطاعة</span>
+          <strong>{{ item.powerWatts }} واط</strong>
+        </div>
+
+        <div class="specification">
+          <span>الكمية المتوفرة</span>
+          <strong>{{ item.stock }}</strong>
+        </div>
+
+        <div class="purchase-row">
+          <strong class="price">{{ item.price }} $</strong>
+
+          @if (item.stock > 0) {
+            <span class="availability">متوفر حالياً</span>
+          } @else {
+            <span class="unavailable">نفد المخزون</span>
+          }
+        </div>
+      </div>
+    </article>
+  } @else {
+    <section class="not-found">
+      <h1>المنتج غير موجود</h1>
+      <p>قد يكون الرابط غير صحيح أو أن المنتج غير متاح.</p>
+      <a routerLink="/products">تصفّح المنتجات</a>
+    </section>
+  }
+</section>
