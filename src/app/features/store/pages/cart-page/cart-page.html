@@ -1,1 +1,113 @@
-<p>cart-page works!</p>
+
+<section class="cart-page container">
+  <header class="cart-page__header">
+    <div>
+      <h1>سلة المشتريات</h1>
+      <p class="text-muted">
+        راجع المنتجات والكميات قبل إتمام الطلب.
+      </p>
+    </div>
+
+    @if (items().length > 0) {
+      <app-button
+        type="button"
+        variant="secondary"
+        (click)="clearCart()"
+      >
+        إفراغ السلة
+      </app-button>
+    }
+  </header>
+
+  @if (items().length === 0) {
+    <section class="cart-empty" aria-labelledby="empty-cart-title">
+      <h2 id="empty-cart-title">سلتك فارغة</h2>
+
+      <p class="text-muted">
+        تصفح المنتجات واختر ما يناسب احتياجاتك.
+      </p>
+
+      <a routerLink="/products" class="button-link">
+        تصفح المنتجات
+      </a>
+    </section>
+  } @else {
+    <div class="cart-layout">
+      <section class="cart-items" aria-label="المنتجات في السلة">
+        @for (item of items(); track item.product.id) {
+          <article class="cart-item">
+            <img
+              class="cart-item__image"
+              [src]="item.product.imageUrl"
+              [alt]="item.product.name"
+            />
+
+            <div class="cart-item__details">
+              <h2>{{ item.product.name }}</h2>
+
+              <p class="text-muted">
+                سعر الوحدة:
+                {{ item.product.price }} $
+              </p>
+
+              <p class="cart-item__subtotal">
+                المجموع:
+                {{ item.product.price * item.quantity }} $
+              </p>
+            </div>
+
+            <div class="cart-item__actions">
+              <label>
+                <span>الكمية</span>
+
+                <select
+                  [value]="item.quantity"
+                  [attr.aria-label]="'كمية ' + item.product.name"
+                  (change)="updateQuantity(item.product.id, $event)"
+                >
+                  @for (
+                    option of getQuantityOptions(item);
+                    track option.value
+                  ) {
+                    <option [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+              </label>
+
+              <app-button
+                type="button"
+                variant="danger"
+                (click)="removeProduct(item.product.id)"
+              >
+                حذف
+              </app-button>
+            </div>
+          </article>
+        }
+      </section>
+
+      <aside class="cart-summary" aria-labelledby="summary-title">
+        <h2 id="summary-title">ملخص الطلب</h2>
+
+        <div class="cart-summary__row">
+          <span>عدد الوحدات</span>
+          <strong>{{ totalItems() }}</strong>
+        </div>
+
+        <div class="cart-summary__row">
+          <span>الإجمالي</span>
+          <strong>{{ totalPrice() }} $</strong>
+        </div>
+
+        <a
+          routerLink="/checkout"
+          class="button-link cart-summary__checkout"
+        >
+          متابعة إلى الدفع
+        </a>
+      </aside>
+    </div>
+  }
+</section>

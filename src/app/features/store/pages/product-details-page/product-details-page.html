@@ -37,6 +37,23 @@
             <span class="unavailable">نفد المخزون</span>
           }
         </div>
+@if (product(); as currentProduct) {
+  <button
+    type="button"
+    class="product-details__add-button"
+    [disabled]="
+      !currentProduct.isActive ||
+      currentProduct.stock <= 0
+    "
+    (click)="addToCart()"
+  >
+    {{
+      currentProduct.stock <= 0
+        ? 'غير متوفر حالياً'
+        : 'أضف إلى السلة'
+    }}
+  </button>
+}
       </div>
     </article>
   } @else {

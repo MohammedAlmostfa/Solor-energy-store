@@ -1,1 +1,204 @@
-<p>home-page works!</p>
+
+<main class="home-page">
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge">حلول طاقة لمستقبل أفضل</span>
+
+      <h1>
+        استثمر في الشمس،
+        <span>ووفر في طاقتك</span>
+      </h1>
+
+      <p>
+        اكتشف منتجات الطاقة الشمسية من الألواح والبطاريات
+        والإنفرترات، واختر الحل المناسب لاحتياجاتك.
+      </p>
+
+      <div class="hero-actions">
+        <a routerLink="/products" class="button button-primary">
+          تسوق المنتجات
+        </a>
+
+        <a href="#categories" class="button button-secondary">
+          اكتشف التصنيفات
+        </a>
+      </div>
+
+      <div class="hero-highlights">
+        <span>منتجات متنوعة</span>
+        <span>أسعار واضحة</span>
+        <span>تسوق بسهولة</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="sun"></div>
+
+      <div class="solar-scene">
+        <div class="solar-panel panel-back"></div>
+        <div class="solar-panel panel-front"></div>
+      </div>
+
+      <div class="energy-card">
+        <span class="energy-icon">☀</span>
+        <div>
+          <strong>طاقة أنظف</strong>
+          <span>خيار أفضل للمستقبل</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories-section" id="categories">
+    <div class="section-heading">
+      <div>
+        <span class="section-eyebrow">تسوق حسب احتياجك</span>
+        <h2>تصفح التصنيفات</h2>
+      </div>
+
+      <a routerLink="/products" class="text-link">
+        جميع المنتجات ←
+      </a>
+    </div>
+
+    <div class="categories-grid">
+      @for (category of categories; track category) {
+        <a
+          class="category-card"
+          [routerLink]="['/products']"
+          [queryParams]="{ category: category }"
+        >
+          <span class="category-symbol" aria-hidden="true">
+            @switch (category) {
+              @case ('solar-panel') { ☀ }
+              @case ('inverter') { ↗ }
+              @case ('battery') { ▰ }
+              @case ('accessory') { ⚙ }
+            }
+          </span>
+
+          <h3>{{ getCategoryLabel(category) }}</h3>
+          <span class="category-link">اكتشف المنتجات ←</span>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="featured-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-eyebrow">اختياراتنا لك</span>
+        <h2>منتجات مميزة</h2>
+        <p>اكتشف بعض المنتجات المتوفرة في متجرنا.</p>
+      </div>
+
+      <a routerLink="/products" class="text-link">
+        عرض الكل ←
+      </a>
+    </div>
+
+    @if (cartFeedback(); as message) {
+      <p class="cart-feedback" role="status" aria-live="polite">
+        {{ message }}
+        <a routerLink="/cart">عرض السلة</a>
+      </p>
+    }
+
+    @if (featuredProducts().length > 0) {
+      <div class="featured-grid">
+        @for (product of featuredProducts(); track product.id) {
+          <article class="product-card">
+            <a
+              class="product-image"
+              [routerLink]="['/products', product.id]"
+              [attr.aria-label]="'عرض ' + product.name"
+            >
+              <img
+                [src]="product.imageUrl"
+                [alt]="product.name"
+                loading="lazy"
+              />
+
+              @if (product.stock === 0) {
+                <span class="stock-badge">نفد المخزون</span>
+              }
+            </a>
+
+            <div class="product-info">
+              <span class="product-category">
+                {{ getCategoryLabel(product.category) }}
+              </span>
+
+              <h3>
+                <a [routerLink]="['/products', product.id]">
+                  {{ product.name }}
+                </a>
+              </h3>
+
+              <p class="product-description">
+                {{ product.description }}
+              </p>
+
+              <div class="product-footer">
+                <strong class="product-price">
+                  {{ product.price | number:'1.0-2' }}
+                </strong>
+
+                <a
+                  [routerLink]="['/products', product.id]"
+                  class="details-button"
+                >
+                  التفاصيل
+                </a>
+              </div>
+
+              <app-button
+                [disabled]="!product.isActive || product.stock <= 0"
+                (clicked)="addToCart(product)"
+              >
+                {{
+                  !product.isActive
+                    ? 'غير متاح'
+                    : product.stock <= 0
+                      ? 'نفد المخزون'
+                      : 'أضف إلى السلة'
+                }}
+              </app-button>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty-products">
+        <h3>لا توجد منتجات للعرض حاليًا</h3>
+        <p>يمكنك العودة لاحقًا للاطلاع على المنتجات المتاحة.</p>
+      </div>
+    }
+  </section>
+
+  <section class="benefits-section">
+    <div class="benefit-item">
+      <span class="benefit-icon" aria-hidden="true">✓</span>
+      <div>
+        <h3>معلومات واضحة</h3>
+        <p>اطلع على الأسعار والتفاصيل قبل الشراء.</p>
+      </div>
+    </div>
+
+    <div class="benefit-item">
+      <span class="benefit-icon" aria-hidden="true">↗</span>
+      <div>
+        <h3>خيارات متعددة</h3>
+        <p>تصفح فئات مختلفة من منتجات الطاقة الشمسية.</p>
+      </div>
+    </div>
+
+    <div class="benefit-item">
+      <span class="benefit-icon" aria-hidden="true">◎</span>
+      <div>
+        <h3>تجربة سهلة</h3>
+        <p>انتقل من اكتشاف المنتج إلى تفاصيله بسهولة.</p>
+      </div>
+    </div>
+  </section>
+</main>

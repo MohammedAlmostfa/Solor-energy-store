@@ -8,7 +8,12 @@
         اكتشف الحلول المناسبة لاحتياجاتك.
       </p>
     </div>
-
+@if (cartFeedback(); as message) {
+  <div class="cart-feedback" role="status" aria-live="polite">
+    <span class="cart-feedback__icon" aria-hidden="true">✓</span>
+    <span>{{ message }}</span>
+  </div>
+}
     <span class="product-count">
       {{ filteredProducts().length }} من {{ products().length }} منتجات
     </span>
@@ -104,6 +109,23 @@
   عرض التفاصيل
 </a>
           </div>
+
+          <app-button
+           class="product-card__add-button"
+  type="button"
+  variant="primary"
+  [fullWidth]="true"
+  [disabled]="!product.isActive || product.stock <= 0"
+  (clicked)="addToCart(product)"
+>
+  {{
+    !product.isActive
+      ? 'غير متاح'
+      : product.stock <= 0
+        ? 'غير متوفر'
+        : 'أضف إلى السلة'
+  }}
+</app-button>
         </article>
       }
     </div>

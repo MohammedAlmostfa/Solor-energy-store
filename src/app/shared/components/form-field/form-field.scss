@@ -1,0 +1,28 @@
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.form-field {
+  display: grid;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+label {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.field-errors {
+  display: grid;
+  gap: var(--spacing-1, 4px);
+}
+
+.field-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}

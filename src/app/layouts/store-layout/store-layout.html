@@ -1,3 +1,4 @@
+
 <header class="store-header">
   <a class="brand" routerLink="/">
     <span class="brand-icon" aria-hidden="true">☀</span>
@@ -5,10 +6,29 @@
   </a>
 
   <nav class="store-nav" aria-label="التنقل الرئيسي">
-    <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }"
-       routerLinkActive="active">الرئيسية</a>
-    <a routerLink="/products" routerLinkActive="active">المنتجات</a>
-    <a routerLink="/cart" routerLinkActive="active">السلة</a>
+    <a
+      routerLink="/"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="active"
+    >
+      الرئيسية
+    </a>
+
+    <a routerLink="/products" routerLinkActive="active">
+      المنتجات
+    </a>
+
+    <a
+      class="cart-link"
+      routerLink="/cart"
+      routerLinkActive="active"
+    >
+      <span class="cart-icon" aria-hidden="true">🛒</span>
+      <span>السلة</span>
+      @if (cartItemCount() > 0) {
+        <span class="cart-count">{{ cartItemCount() }}</span>
+      }
+    </a>
   </nav>
 
   <a class="admin-link" routerLink="/admin">الإدارة</a>

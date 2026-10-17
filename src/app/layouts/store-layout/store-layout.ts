@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink,  RouterLinkActive, RouterOutlet } from '@angular/router';
-
+import { inject } from '@angular/core';
+import { CartService } from '../../features/store/services/cart.service';
 @Component({
   selector: 'app-store-layout',
   standalone: true,
@@ -8,4 +9,9 @@ import { RouterLink,  RouterLinkActive, RouterOutlet } from '@angular/router';
   templateUrl: './store-layout.html',
   styleUrl: './store-layout.scss',
 })
-export class StoreLayout {}
+export class StoreLayout {
+
+  private readonly cartService = inject(CartService);
+
+readonly cartItemCount = this.cartService.totalItems;
+}

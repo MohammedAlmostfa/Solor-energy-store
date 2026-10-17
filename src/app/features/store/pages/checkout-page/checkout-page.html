@@ -1,1 +1,225 @@
-<p>checkout-page works!</p>
+
+<div class="checkout-page">
+  @if (cartItems().length === 0) {
+    <section class="empty-checkout">
+      <h1>سلتك فارغة</h1>
+      <p>أضف منتجات إلى السلة قبل متابعة إتمام الطلب.</p>
+
+      <a routerLink="/products" class="primary-button">
+        تصفح المنتجات
+      </a>
+    </section>
+  } @else {
+    <header class="checkout-header">
+      <h1>إتمام الطلب</h1>
+      <p>أدخل معلوماتك لإتمام عملية الشراء.</p>
+    </header>
+
+    <div class="checkout-layout">
+      <section
+        class="checkout-form-panel"
+        aria-label="معلومات العميل"
+      >
+        <form
+          class="checkout-form"
+          [formGroup]="checkoutForm"
+          (ngSubmit)="submitOrder()"
+          novalidate
+        >
+          <h2>معلومات التوصيل</h2>
+
+          <app-form-field
+            label="الاسم الكامل"
+            inputId="fullName"
+            [control]="checkoutForm.controls.fullName"
+            [errors]="[
+              { key: 'required', message: 'الاسم الكامل مطلوب.' },
+              { key: 'maxlength', message: 'يجب ألا يتجاوز الاسم 100 حرف.' }
+            ]"
+          >
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              autocomplete="name"
+              [attr.aria-invalid]="
+                checkoutForm.controls.fullName.touched &&
+                checkoutForm.controls.fullName.invalid
+              "
+              [attr.aria-describedby]="
+                checkoutForm.controls.fullName.touched &&
+                checkoutForm.controls.fullName.invalid
+                  ? 'fullName-error'
+                  : null
+              "
+            />
+          </app-form-field>
+
+          <app-form-field
+            label="رقم الهاتف"
+            inputId="phone"
+            [control]="checkoutForm.controls.phone"
+            [errors]="[
+              { key: 'required', message: 'رقم الهاتف مطلوب.' },
+              { key: 'maxlength', message: 'يجب ألا يتجاوز رقم الهاتف 20 حرفًا.' },
+              { key: 'invalidPhoneNumber', message: 'يرجى إدخال رقم هاتف صحيح.' }
+            ]"
+          >
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              autocomplete="tel"
+              [attr.aria-invalid]="
+                checkoutForm.controls.phone.touched &&
+                checkoutForm.controls.phone.invalid
+              "
+              [attr.aria-describedby]="
+                checkoutForm.controls.phone.touched &&
+                checkoutForm.controls.phone.invalid
+                  ? 'phone-error'
+                  : null
+              "
+            />
+          </app-form-field>
+
+          <app-form-field
+            label="المدينة"
+            inputId="city"
+            [control]="checkoutForm.controls.city"
+            [errors]="[
+              { key: 'required', message: 'المدينة مطلوبة.' },
+              { key: 'maxlength', message: 'يجب ألا تتجاوز المدينة 100 حرف.' }
+            ]"
+          >
+            <input
+              id="city"
+              type="text"
+              formControlName="city"
+              autocomplete="address-level2"
+              [attr.aria-invalid]="
+                checkoutForm.controls.city.touched &&
+                checkoutForm.controls.city.invalid
+              "
+              [attr.aria-describedby]="
+                checkoutForm.controls.city.touched &&
+                checkoutForm.controls.city.invalid
+                  ? 'city-error'
+                  : null
+              "
+            />
+          </app-form-field>
+
+          <app-form-field
+            label="العنوان بالتفصيل"
+            inputId="address"
+            [control]="checkoutForm.controls.address"
+            [errors]="[
+              { key: 'required', message: 'العنوان مطلوب.' },
+              { key: 'maxlength', message: 'يجب ألا يتجاوز العنوان 250 حرفًا.' }
+            ]"
+          >
+            <input
+              id="address"
+              type="text"
+              formControlName="address"
+              autocomplete="street-address"
+              [attr.aria-invalid]="
+                checkoutForm.controls.address.touched &&
+                checkoutForm.controls.address.invalid
+              "
+              [attr.aria-describedby]="
+                checkoutForm.controls.address.touched &&
+                checkoutForm.controls.address.invalid
+                  ? 'address-error'
+                  : null
+              "
+            />
+          </app-form-field>
+
+          <app-form-field
+            label="ملاحظات إضافية (اختياري)"
+            inputId="notes"
+            [control]="checkoutForm.controls.notes"
+            [errors]="[
+              { key: 'maxlength', message: 'يجب ألا تتجاوز الملاحظات 500 حرف.' }
+            ]"
+          >
+            <textarea
+              id="notes"
+              formControlName="notes"
+              rows="4"
+              [attr.aria-invalid]="
+                checkoutForm.controls.notes.touched &&
+                checkoutForm.controls.notes.invalid
+              "
+              [attr.aria-describedby]="
+                checkoutForm.controls.notes.touched &&
+                checkoutForm.controls.notes.invalid
+                  ? 'notes-error'
+                  : null
+              "
+            ></textarea>
+          </app-form-field>
+
+          @if (submitted && checkoutForm.valid) {
+            <p
+              class="form-notice"
+              role="status"
+              aria-live="polite"
+            >
+              البيانات صحيحة، لكن إرسال الطلب لم يُفعّل بعد.
+            </p>
+          }
+
+          <div class="checkout-actions">
+            <a routerLink="/cart">العودة إلى السلة</a>
+
+            <app-button type="submit" variant="primary">
+              مراجعة البيانات
+            </app-button>
+          </div>
+        </form>
+      </section>
+
+      <aside
+        class="checkout-summary"
+        aria-labelledby="summary-title"
+      >
+        <h2 id="summary-title">ملخص الطلب</h2>
+
+        <p class="summary-count">
+          عدد القطع: {{ totalItems() }}
+        </p>
+
+        <div class="summary-items">
+          @for (item of cartItems(); track item.product.id) {
+            <article class="summary-item">
+              <div class="summary-item-info">
+                <h3>{{ item.product.name }}</h3>
+                <p>الكمية: {{ item.quantity }}</p>
+                <p>
+                  سعر القطعة:
+                  {{ item.product.price | number:'1.0-2' }}
+                </p>
+              </div>
+
+              <strong>
+                {{ item.product.price * item.quantity | number:'1.0-2' }}
+              </strong>
+            </article>
+          }
+        </div>
+
+        <div class="summary-total">
+          <span>الإجمالي</span>
+          <strong>{{ totalPrice() | number:'1.0-2' }}</strong>
+        </div>
+
+        <p class="summary-note">
+          سيتم تأكيد الطلب بعد ربط النظام بالخادم.
+        </p>
+      </aside>
+    </div>
+  }
+</div>

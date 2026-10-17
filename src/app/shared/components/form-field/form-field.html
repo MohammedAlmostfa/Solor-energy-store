@@ -1,0 +1,23 @@
+
+<div class="form-field">
+  <label [for]="inputId()">
+    {{ label() }}
+  </label>
+
+  <ng-content />
+@if (control().touched && control().invalid) {
+  <div
+    class="field-errors"
+    [id]="inputId() + '-error'"
+    aria-live="polite"
+  >
+    @for (error of errors(); track error.key) {
+      @if (control().hasError(error.key)) {
+        <p class="field-error">
+          {{ error.message }}
+        </p>
+      }
+    }
+  </div>
+}
+</div>

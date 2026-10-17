@@ -16,11 +16,12 @@ export const STORE_ROUTES: Routes = [
       ),
   },
   {
-  path: 'products/:id',
-  loadComponent: () =>
-    import('./pages/product-details-page/product-details-page')
-      .then((m) => m.ProductDetailsPage),
-},
+    path: 'products/:id',
+    loadComponent: () =>
+      import('./pages/product-details-page/product-details-page').then(
+        (m) => m.ProductDetailsPage,
+      ),
+  },
   {
     path: 'cart',
     loadComponent: () =>

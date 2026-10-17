@@ -7,9 +7,9 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { ProductsService } from '../../services/products-services';
+import { ProductsService } from '../../services/products';
 import { PRODUCT_CATEGORY_LABELS } from '../../utils/product-labels';
-
+import { CartService } from '../../services/cart.service';
 @Component({
   selector: 'app-product-details-page',
   standalone: true,
@@ -21,6 +21,7 @@ import { PRODUCT_CATEGORY_LABELS } from '../../utils/product-labels';
 export class ProductDetailsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly productsService = inject(ProductsService);
+private readonly cartService = inject(CartService);
 
   readonly categoryLabels = PRODUCT_CATEGORY_LABELS;
 
@@ -37,4 +38,14 @@ export class ProductDetailsPage {
 
     return this.productsService.getProductById(id);
   });
+
+  addToCart(): void {
+  const product = this.product();
+
+  if (!product) {
+    return;
+  }
+
+  this.cartService.addProduct(product);
+}
 }

@@ -84,7 +84,29 @@
   gap: var(--spacing-4);
   padding-block: var(--spacing-8);
 }
+.product-details__add-button {
+  width: 100%;
+  max-width: 24rem;
+  min-height: 3rem;
+  padding: var(--spacing-3) var(--spacing-6);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
 
+.product-details__add-button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.product-details__add-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
 @media (max-width: 700px) {
   .details-card {
     grid-template-columns: minmax(0, 1fr);
