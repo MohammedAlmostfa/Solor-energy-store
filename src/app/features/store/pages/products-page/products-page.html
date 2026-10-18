@@ -8,132 +8,35 @@
         اكتشف الحلول المناسبة لاحتياجاتك.
       </p>
     </div>
-@if (cartFeedback(); as message) {
-  <div class="cart-feedback" role="status" aria-live="polite">
-    <span class="cart-feedback__icon" aria-hidden="true">✓</span>
-    <span>{{ message }}</span>
-  </div>
-}
+
     <span class="product-count">
       {{ filteredProducts().length }} من {{ products().length }} منتجات
     </span>
   </header>
 
-  <!-- Search and Filters -->
-  <section
-    class="product-filters"
-    aria-label="البحث وتصفية المنتجات"
-  >
-    <label class="search-field">
-      <span>البحث عن منتج</span>
-
-      <input
-        type="search"
-        placeholder="مثلاً: بطارية أو لوح شمسي"
-        [value]="searchTerm()"
-        (input)="onSearchInput($event)"
-      />
-    </label>
-
-    <label class="filter-field">
-      <span>الفئة</span>
-
-      <select
-        [value]="selectedCategory()"
-        (change)="onCategoryChange($event)"
-      >
-        <option value="all">جميع الفئات</option>
-
-        @for (category of categories; track category.value) {
-          <option [value]="category.value">
-            {{ category.label }}
-          </option>
-        }
-      </select>
-    </label>
-
-    <label class="filter-field">
-      <span>الترتيب حسب السعر</span>
-
-      <select
-        [value]="sortOption()"
-        (change)="onSortChange($event)"
-      >
-        <option value="default">الترتيب الافتراضي</option>
-        <option value="price-asc">السعر: من الأقل للأعلى</option>
-        <option value="price-desc">السعر: من الأعلى للأقل</option>
-      </select>
-    </label>
-  </section>
-
-  <!-- Products List -->
-  @if (filteredProducts().length > 0) {
-    <div class="products-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <article class="product-card">
-          <div class="product-image">
-            <img
-              [src]="product.imageUrl"
-              [alt]="product.name"
-              loading="lazy"
-            />
-          </div>
-
-          <div class="product-info">
-            <span class="product-category">
-              {{ categoryLabels[product.category] }}
-            </span>
-
-            <h2>{{ product.name }}</h2>
-
-            <p class="text-muted">
-              {{ product.description }}
-            </p>
-
-            <p class="product-power">
-              الاستطاعة: {{ product.powerWatts }} واط
-            </p>
-
-            <div class="product-footer">
-              <strong class="product-price">
-                {{ product.price }} $
-              </strong>
-
-              @if (product.stock > 0) {
-                <span class="stock available">متوفر</span>
-              } @else {
-                <span class="stock unavailable">نفد المخزون</span>
-              }
-            </div>
-            <a [routerLink]="['/products', product.id]">
-  عرض التفاصيل
-</a>
-          </div>
-
-          <app-button
-           class="product-card__add-button"
-  type="button"
-  variant="primary"
-  [fullWidth]="true"
-  [disabled]="!product.isActive || product.stock <= 0"
-  (clicked)="addToCart(product)"
->
-  {{
-    !product.isActive
-      ? 'غير متاح'
-      : product.stock <= 0
-        ? 'غير متوفر'
-        : 'أضف إلى السلة'
-  }}
-</app-button>
-        </article>
-      }
-    </div>
-  } @else {
-    <!-- Empty State -->
-    <div class="empty-state">
-      <h2>لم نعثر على منتجات</h2>
-      <p>جرّب تغيير كلمات البحث أو الفئة المحددة.</p>
+  <!-- Cart Feedback -->
+  @if (cartFeedback(); as message) {
+    <div class="cart-feedback" role="status" aria-live="polite">
+      <span class="cart-feedback__icon" aria-hidden="true">✓</span>
+      <span>{{ message }}</span>
     </div>
   }
+
+  <!-- Search and Filters -->
+  <app-products-filters
+    [categories]="categories"
+    [searchTerm]="searchTerm()"
+    [selectedCategory]="selectedCategory()"
+    [sortOption]="sortOption()"
+    (searchTermChange)="searchTerm.set($event)"
+    (categoryChange)="selectedCategory.set($event)"
+    (sortChange)="sortOption.set($event)"
+  />
+
+  <!-- Products List -->
+  <app-products-grid
+    [products]="filteredProducts()"
+    [categoryLabels]="categoryLabels"
+    (addToCart)="addToCart($event)"
+  />
 </section>

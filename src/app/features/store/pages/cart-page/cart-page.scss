@@ -54,7 +54,7 @@
 .cart-item__image {
   width: 6rem;
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: var(--radius-md);
   background: var(--color-background);
 }

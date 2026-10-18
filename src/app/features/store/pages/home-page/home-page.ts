@@ -6,10 +6,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
-import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { HomeCategoriesComponent } from '../../components/home-categories/home-categories';
 import { AddToCartResult } from '../../models/add-to-cart-result.model';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
@@ -19,10 +17,30 @@ import {
   PRODUCT_CATEGORY_LABELS,
 } from '../../utils/product-labels';
 
+import { HomeHeroComponent } from '../../components/home-hero/home-hero';
+import { HomeFeaturedComponent } from '../../components/home-featured/home-featured';
+import { HomeBenefitsComponent } from '../../components/home-benefits/home-benefits';
+import { HomeTestimonialsComponent } from '../../components/home-testimonials/home-testimonials';
+import { HomeContactComponent } from '../../components/home-contact/home-contact';
+
+const CART_FEEDBACK_MESSAGES: Record<AddToCartResult, string> = {
+  added: 'تمت إضافة المنتج إلى السلة.',
+  'out-of-stock': 'هذا المنتج غير متوفر حاليًا.',
+  inactive: 'هذا المنتج غير متاح للشراء.',
+  'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
+};
+
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, AppButtonComponent],
+  imports: [
+    HomeHeroComponent,
+    HomeCategoriesComponent,
+    HomeFeaturedComponent,
+    HomeBenefitsComponent,
+    HomeTestimonialsComponent,
+    HomeContactComponent,
+  ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +52,9 @@ export class HomePage {
   readonly products = signal(this.productsService.getProducts());
 
   readonly featuredProducts = computed(() =>
-    this.products().slice(0, 4),
+    this.products()
+      .filter((product) => product.isActive)
+      .slice(0, 4),
   );
 
   readonly categories = PRODUCT_CATEGORIES;
@@ -42,19 +62,9 @@ export class HomePage {
 
   readonly cartFeedback = signal<string | null>(null);
 
-  getCategoryLabel(category: Product['category']): string {
-    return this.categoryLabels[category];
-  }
-
   addToCart(product: Product): void {
     const result = this.cartService.addProduct(product);
-    const messages: Record<AddToCartResult, string> = {
-      added: 'تمت إضافة المنتج إلى السلة.',
-      'out-of-stock': 'هذا المنتج غير متوفر حاليًا.',
-      inactive: 'هذا المنتج غير متاح للشراء.',
-      'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
-    };
 
-    this.cartFeedback.set(messages[result]);
+    this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
   }
 }

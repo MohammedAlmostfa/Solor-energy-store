@@ -1,0 +1,59 @@
+
+<article class="product-card">
+  <div class="product-image">
+    <img
+      [src]="product().imageUrl"
+      [alt]="product().name"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="product-info">
+    <span class="product-category">
+      {{ categoryLabel() }}
+    </span>
+
+    <h2>{{ product().name }}</h2>
+
+    <p class="text-muted">
+      {{ product().description }}
+    </p>
+
+    <p class="product-power">
+      الاستطاعة: {{ product().powerWatts }} واط
+    </p>
+
+    <div class="product-footer">
+      <strong class="product-price">
+        {{ product().price }} $
+      </strong>
+
+      @if (product().stock > 0) {
+        <span class="stock available">متوفر</span>
+      } @else {
+        <span class="stock unavailable">نفد المخزون</span>
+      }
+    </div>
+
+    <a [routerLink]="['/products', product().id]">
+      عرض التفاصيل
+    </a>
+  </div>
+
+  <app-button
+    class="product-card__add-button"
+    type="button"
+    variant="primary"
+
+    [disabled]="!product().isActive || product().stock <= 0"
+    (clicked)="onAddToCart()"
+  >
+    {{
+      !product().isActive
+        ? 'غير متاح'
+        : product().stock <= 0
+          ? 'غير متوفر'
+          : 'أضف إلى السلة'
+    }}
+  </app-button>
+</article>

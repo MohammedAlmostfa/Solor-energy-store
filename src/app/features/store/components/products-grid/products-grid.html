@@ -1,0 +1,17 @@
+
+@if (products().length > 0) {
+  <div class="products-grid">
+    @for (product of products(); track product.id) {
+      <app-product-card
+        [product]="product"
+        [categoryLabel]="categoryLabels()[product.category]"
+        (addToCart)="addToCart.emit($event)"
+      />
+    }
+  </div>
+} @else {
+  <div class="empty-state">
+    <h2>لم نعثر على منتجات</h2>
+    <p>جرّب تغيير كلمات البحث أو الفئة المحددة.</p>
+  </div>
+}

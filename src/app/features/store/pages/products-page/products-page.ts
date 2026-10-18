@@ -8,9 +8,10 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { ProductsFiltersComponent } from '../../components/products-filters/products-filters';
+import { ProductsGridComponent } from '../../components/products-grid/products-grid';
 import { AddToCartResult } from '../../models/add-to-cart-result.model';
 import { Product, ProductCategory } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
@@ -27,22 +28,23 @@ import {
 @Component({
   selector: 'app-products-page',
   standalone: true,
-  imports: [RouterLink, AppButtonComponent],
+  imports: [
+    ProductsFiltersComponent,
+    ProductsGridComponent,
+  ],
   templateUrl: './products-page.html',
   styleUrl: './products-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsPage {
-  // Dependencies
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  // Static data
+
   readonly categories = PRODUCT_CATEGORIES;
   readonly categoryLabels = PRODUCT_CATEGORY_LABELS;
 
-  // State
   readonly products = signal<Product[]>(
     this.productsService.getProducts(),
   );
@@ -54,19 +56,6 @@ export class ProductsPage {
   readonly cartItemCount = this.cartService.totalItems;
   readonly cartFeedback = signal<string | null>(null);
 
-  constructor() {
-    this.route.queryParamMap
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((params) => {
-        const category = params.get('category');
-        const selectedCategory = this.categories.find(
-          (option) => option.value === category,
-        )?.value;
-
-        this.selectedCategory.set(selectedCategory ?? 'all');
-      });
-  }
-
   readonly filteredProducts = computed(() =>
     filterProducts({
       products: this.products(),
@@ -76,12 +65,18 @@ export class ProductsPage {
     }),
   );
 
-  onSearchInput(event: Event): void {
-    const input = event.target;
+  constructor() {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const category = params.get('category');
 
-    if (input instanceof HTMLInputElement) {
-      this.searchTerm.set(input.value);
-    }
+        const selectedCategory = this.categories.find(
+          (option) => option.value === category,
+        )?.value;
+
+        this.selectedCategory.set(selectedCategory ?? 'all');
+      });
   }
 
   addToCart(product: Product): void {
@@ -95,40 +90,5 @@ export class ProductsPage {
     };
 
     this.cartFeedback.set(messages[result]);
-  }
-
-  onCategoryChange(event: Event): void {
-    const select = event.target;
-
-    if (!(select instanceof HTMLSelectElement)) {
-      return;
-    }
-
-    const value = select.value;
-
-    if (
-      value === 'all' ||
-      this.categories.some((category) => category.value === value)
-    ) {
-      this.selectedCategory.set(value as ProductCategory | 'all');
-    }
-  }
-
-  onSortChange(event: Event): void {
-    const select = event.target;
-
-    if (!(select instanceof HTMLSelectElement)) {
-      return;
-    }
-
-    const value = select.value;
-
-    if (
-      value === 'default' ||
-      value === 'price-asc' ||
-      value === 'price-desc'
-    ) {
-      this.sortOption.set(value);
-    }
   }
 }

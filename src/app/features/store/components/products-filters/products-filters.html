@@ -1,0 +1,46 @@
+
+<section
+  class="product-filters"
+  aria-label="البحث وتصفية المنتجات"
+>
+  <label class="search-field">
+    <span>البحث عن منتج</span>
+
+    <input
+      type="search"
+      placeholder="مثلاً: بطارية أو لوح شمسي"
+      [value]="searchTerm()"
+      (input)="onSearchInput($event)"
+    />
+  </label>
+
+  <label class="filter-field">
+    <span>الفئة</span>
+
+    <select
+      [value]="selectedCategory()"
+      (change)="onCategoryChange($event)"
+    >
+      <option value="all">جميع الفئات</option>
+
+      @for (category of categories(); track category.value) {
+        <option [value]="category.value">
+          {{ category.label }}
+        </option>
+      }
+    </select>
+  </label>
+
+  <label class="filter-field">
+    <span>الترتيب حسب السعر</span>
+
+    <select
+      [value]="sortOption()"
+      (change)="onSortChange($event)"
+    >
+      <option value="default">الترتيب الافتراضي</option>
+      <option value="price-asc">السعر: من الأقل للأعلى</option>
+      <option value="price-desc">السعر: من الأعلى للأقل</option>
+    </select>
+  </label>
+</section>

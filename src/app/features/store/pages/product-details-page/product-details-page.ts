@@ -1,19 +1,26 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
+  signal,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { AddToCartResult } from '../../models/add-to-cart-result.model';
+import { CartService } from '../../services/cart.service';
 import { ProductsService } from '../../services/products';
 import { PRODUCT_CATEGORY_LABELS } from '../../utils/product-labels';
-import { CartService } from '../../services/cart.service';
+import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
 @Component({
   selector: 'app-product-details-page',
   standalone: true,
-  imports: [RouterLink],
+imports: [
+  RouterLink,
+  AppButtonComponent,
+],
   templateUrl: './product-details-page.html',
   styleUrl: './product-details-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,9 +28,10 @@ import { CartService } from '../../services/cart.service';
 export class ProductDetailsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly productsService = inject(ProductsService);
-private readonly cartService = inject(CartService);
+  private readonly cartService = inject(CartService);
 
   readonly categoryLabels = PRODUCT_CATEGORY_LABELS;
+  readonly cartFeedback = signal<string | null>(null);
 
   private readonly routeParams = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
@@ -40,12 +48,21 @@ private readonly cartService = inject(CartService);
   });
 
   addToCart(): void {
-  const product = this.product();
+    const product = this.product();
 
-  if (!product) {
-    return;
+    if (!product) {
+      return;
+    }
+
+    const result = this.cartService.addProduct(product);
+
+    const messages: Record<AddToCartResult, string> = {
+      added: 'تمت إضافة المنتج إلى السلة.',
+      'out-of-stock': 'هذا المنتج غير متوفر حالياً.',
+      inactive: 'هذا المنتج غير متاح للشراء.',
+      'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
+    };
+
+    this.cartFeedback.set(messages[result]);
   }
-
-  this.cartService.addProduct(product);
-}
 }

@@ -1,4 +1,3 @@
-
 <section class="cart-page container">
   <header class="cart-page__header">
     <div>
@@ -12,7 +11,7 @@
       <app-button
         type="button"
         variant="secondary"
-        (click)="clearCart()"
+        (clicked)="clearCart()"
       >
         إفراغ السلة
       </app-button>
@@ -20,7 +19,10 @@
   </header>
 
   @if (items().length === 0) {
-    <section class="cart-empty" aria-labelledby="empty-cart-title">
+    <section
+      class="cart-empty"
+      aria-labelledby="empty-cart-title"
+    >
       <h2 id="empty-cart-title">سلتك فارغة</h2>
 
       <p class="text-muted">
@@ -33,7 +35,10 @@
     </section>
   } @else {
     <div class="cart-layout">
-      <section class="cart-items" aria-label="المنتجات في السلة">
+      <section
+        class="cart-items"
+        aria-label="المنتجات في السلة"
+      >
         @for (item of items(); track item.product.id) {
           <article class="cart-item">
             <img
@@ -46,8 +51,7 @@
               <h2>{{ item.product.name }}</h2>
 
               <p class="text-muted">
-                سعر الوحدة:
-                {{ item.product.price }} $
+                سعر الوحدة: {{ item.product.price }} $
               </p>
 
               <p class="cart-item__subtotal">
@@ -79,7 +83,7 @@
               <app-button
                 type="button"
                 variant="danger"
-                (click)="removeProduct(item.product.id)"
+                (clicked)="removeProduct(item.product.id)"
               >
                 حذف
               </app-button>
@@ -88,7 +92,10 @@
         }
       </section>
 
-      <aside class="cart-summary" aria-labelledby="summary-title">
+      <aside
+        class="cart-summary"
+        aria-labelledby="summary-title"
+      >
         <h2 id="summary-title">ملخص الطلب</h2>
 
         <div class="cart-summary__row">

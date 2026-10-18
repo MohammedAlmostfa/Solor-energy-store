@@ -1,12 +1,22 @@
+
 <section class="product-details container">
   <a class="back-link" routerLink="/products">
     ← العودة إلى المنتجات
   </a>
 
+  @if (cartFeedback(); as message) {
+    <div class="cart-feedback" role="status" aria-live="polite">
+      {{ message }}
+    </div>
+  }
+
   @if (product(); as item) {
     <article class="details-card">
       <div class="details-image">
-        <img [src]="item.imageUrl" [alt]="item.name" />
+        <img
+          [src]="item.imageUrl"
+          [alt]="item.name"
+        />
       </div>
 
       <div class="details-content">
@@ -37,23 +47,24 @@
             <span class="unavailable">نفد المخزون</span>
           }
         </div>
-@if (product(); as currentProduct) {
-  <button
-    type="button"
-    class="product-details__add-button"
-    [disabled]="
-      !currentProduct.isActive ||
-      currentProduct.stock <= 0
-    "
-    (click)="addToCart()"
-  >
-    {{
-      currentProduct.stock <= 0
+
+
+<app-button
+  type="button"
+  variant="primary"
+
+  [disabled]="!item.isActive || item.stock <= 0"
+  (clicked)="addToCart()"
+>
+  {{
+    !item.isActive
+      ? 'غير متاح'
+      : item.stock <= 0
         ? 'غير متوفر حالياً'
         : 'أضف إلى السلة'
-    }}
-  </button>
-}
+  }}
+</app-button>
+
       </div>
     </article>
   } @else {

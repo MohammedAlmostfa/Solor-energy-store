@@ -1,0 +1,70 @@
+
+<section class="categories-section" id="categories">
+  <div class="section-heading">
+    <div>
+      <span class="section-eyebrow">اكتشف مجموعتنا</span>
+
+      <h2>
+        كل ما تحتاجه، <span>في مكان واحد.</span>
+      </h2>
+
+      <p>ابدأ باختيار الفئة المناسبة لنظام الطاقة لديك.</p>
+    </div>
+
+    <a routerLink="/products" class="section-link">
+      جميع المنتجات
+      <span aria-hidden="true">←</span>
+    </a>
+  </div>
+
+  <div class="categories-grid">
+    @for (category of categories(); track category.value) {
+      <a
+        class="category-card"
+        [routerLink]="['/products']"
+        [queryParams]="{ category: category.value }"
+      >
+        <span class="category-icon" aria-hidden="true">
+          @switch (category.value) {
+            @case ('solar-panel') {
+              <svg viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="8" />
+                <path
+                  d="M24 3v6M24 39v6M3 24h6M39 24h6M9 9l4 4M35 35l4 4M39 9l-4 4M13 35l-4 4"
+                />
+              </svg>
+            }
+
+            @case ('inverter') {
+              <svg viewBox="0 0 48 48" fill="none">
+                <rect x="7" y="9" width="34" height="30" rx="5" />
+                <path d="M27 14l-9 12h8l-5 8" />
+              </svg>
+            }
+
+            @case ('battery') {
+              <svg viewBox="0 0 48 48" fill="none">
+                <rect x="7" y="14" width="34" height="25" rx="4" />
+                <path d="M18 14v-4h12v4M25 19l-7 9h7l-3 5" />
+              </svg>
+            }
+
+            @case ('accessory') {
+              <svg viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="15" />
+                <circle cx="24" cy="24" r="6" />
+                <path d="M24 3v6M24 39v6M3 24h6M39 24h6" />
+              </svg>
+            }
+          }
+        </span>
+
+        <span class="category-name">
+          {{ category.label }}
+        </span>
+
+        <span class="category-arrow" aria-hidden="true">↗</span>
+      </a>
+    }
+  </div>
+</section>

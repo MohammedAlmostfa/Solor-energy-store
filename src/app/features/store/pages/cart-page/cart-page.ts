@@ -5,15 +5,16 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../services/cart.service';
-import { CartQuantityOption } from '../../models/cart-quantity-option.model';
-import { CartItem } from '../../models/cart-item.model';
+
 import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { CartItem } from '../../models/cart-item.model';
+import { CartQuantityOption } from '../../models/cart-quantity-option.model';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart-page',
   standalone: true,
-  imports: [RouterLink,AppButtonComponent],
+  imports: [RouterLink, AppButtonComponent],
   templateUrl: './cart-page.html',
   styleUrl: './cart-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +28,7 @@ export class CartPage {
 
   getQuantityOptions(item: CartItem): CartQuantityOption[] {
     return Array.from(
-      { length: item.product.stock },
+      { length: Math.max(0, item.product.stock) },
       (_, index) => {
         const quantity = index + 1;
 
@@ -40,13 +41,11 @@ export class CartPage {
   }
 
   updateQuantity(productId: number, event: Event): void {
-    const select = event.target;
-
-    if (!(select instanceof HTMLSelectElement)) {
+    if (!(event.target instanceof HTMLSelectElement)) {
       return;
     }
 
-    const quantity = Number(select.value);
+    const quantity = Number(event.target.value);
 
     if (!Number.isSafeInteger(quantity) || quantity < 1) {
       return;
