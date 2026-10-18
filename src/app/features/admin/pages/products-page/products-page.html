@@ -1,0 +1,192 @@
+
+<section class="products-page" dir="rtl">
+  <header class="page-header">
+    <div class="page-title">
+      <p class="eyebrow">إدارة المتجر</p>
+      <h2>المنتجات</h2>
+      <p class="page-description">
+        تابع منتجات المتجر وحالة توفرها وكميات المخزون.
+      </p>
+    </div>
+
+    <button class="primary-action" type="button" (click)="openCreateForm()">
+  <span aria-hidden="true">＋</span>
+  إضافة منتج
+</button>
+@if (isFormOpen()) {
+  <app-product-form
+    [product]="editingProduct()"
+    (save)="saveProduct($event)"
+    (cancel)="closeForm()"
+  />
+}
+  </header>
+
+  <section class="summary-grid" aria-label="ملخص المنتجات">
+    <article class="summary-card">
+      <span class="summary-label">إجمالي المنتجات</span>
+      <strong class="summary-value">{{ products().length | number }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">منتجات فعّالة</span>
+      <strong class="summary-value">{{ activeProductsCount() | number }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">منتجات غير فعّالة</span>
+      <strong class="summary-value">{{ inactiveProductsCount() | number }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">إجمالي المخزون</span>
+      <strong class="summary-value">{{ totalStock() | number }}</strong>
+    </article>
+  </section>
+
+  <section class="products-panel">
+    <div class="panel-header">
+      <div>
+        <h3>قائمة المنتجات</h3>
+        <p class="text-muted">
+          {{ filteredProducts().length }} نتيجة
+        </p>
+      </div>
+    </div>
+
+    <div class="filters">
+      <label class="search-field">
+        <span>البحث</span>
+        <input
+          type="search"
+          placeholder="ابحث باسم المنتج أو وصفه..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="updateSearch($event)"
+        />
+      </label>
+
+      <label class="filter-field">
+        <span>التصنيف</span>
+        <select
+          [ngModel]="selectedCategory()"
+          (ngModelChange)="updateCategory($event)"
+        >
+          <option value="all">كل التصنيفات</option>
+          <option value="solar-panel">ألواح شمسية</option>
+          <option value="inverter">عاكسات كهربائية</option>
+          <option value="battery">بطاريات</option>
+          <option value="accessory">ملحقات</option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>الحالة</span>
+        <select
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="updateStatus($event)"
+        >
+          <option value="all">كل الحالات</option>
+          <option value="active">فعّال</option>
+          <option value="inactive">غير فعّال</option>
+        </select>
+      </label>
+    </div>
+
+    @if (filteredProducts().length > 0) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">المنتج</th>
+              <th scope="col">التصنيف</th>
+              <th scope="col">السعر</th>
+              <th scope="col">الاستطاعة</th>
+              <th scope="col">المخزون</th>
+              <th scope="col">الحالة</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of filteredProducts(); track product.id) {
+              <tr>
+                <td>
+                  <div class="product-info">
+                    <img
+                      [src]="product.imageUrl"
+                      [alt]="product.name"
+                      loading="lazy"
+                    />
+                    <div>
+                      <strong>{{ product.name }}</strong>
+                      <span class="product-description">
+                        {{ product.description }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>{{ categoryLabels[product.category] }}</td>
+                <td>{{ product.price | number }}</td>
+                <td>{{ product.powerWatts | number }} W</td>
+                <td>
+                  <span
+                    class="stock-value"
+                    [class.low-stock]="product.stock > 0 && product.stock <= 5"
+                    [class.out-of-stock]="product.stock === 0"
+                  >
+                    {{ product.stock }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.status-active]="product.isActive"
+                    [class.status-inactive]="!product.isActive"
+                  >
+                    {{ product.isActive ? 'فعّال' : 'غير فعّال' }}
+                  </span>
+                </td>
+
+                <td>
+  <div class="product-actions">
+    <button
+      class="action-button"
+      type="button"
+      (click)="openEditForm(product)"
+    >
+      تعديل
+    </button>
+
+    <button
+      class="action-button"
+      type="button"
+      (click)="toggleProductStatus(product)"
+    >
+      {{ product.isActive ? 'تعطيل' : 'تفعيل' }}
+    </button>
+
+    <button
+      class="action-button delete-action"
+      type="button"
+      (click)="deleteProduct(product)"
+    >
+      حذف
+    </button>
+  </div>
+</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <span class="empty-icon" aria-hidden="true">⌕</span>
+        <h4>ما لقينا منتجات مطابقة</h4>
+        <p>جرّب تغيير كلمة البحث أو خيارات التصفية.</p>
+      </div>
+    }
+  </section>
+
+</section>

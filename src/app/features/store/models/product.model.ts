@@ -10,8 +10,5 @@ export interface Product {
   isActive: boolean;
 }
 
-export type ProductCategory =
-  | 'solar-panel'
-  | 'inverter'
-  | 'battery'
-  | 'accessory';
+
+export type ProductCategory = string;

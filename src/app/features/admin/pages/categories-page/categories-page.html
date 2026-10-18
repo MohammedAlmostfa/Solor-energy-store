@@ -1,0 +1,136 @@
+
+<section class="categories-page" dir="rtl">
+  <header class="page-header">
+    <div>
+      <h1>إدارة التصنيفات</h1>
+      <p class="text-muted">
+        تنظيم تصنيفات المنتجات وإدارة ارتباطها بالمخزون.
+      </p>
+    </div>
+  </header>
+
+  <section class="stats-grid">
+    <article class="stat-card">
+      <span class="stat-label">إجمالي التصنيفات</span>
+      <strong class="stat-value">{{ totalCategories() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">المنتجات المصنفة</span>
+      <strong class="stat-value">{{ totalAssignedProducts() }}</strong>
+    </article>
+  </section>
+
+  <section class="category-layout">
+    <article class="category-card category-editor">
+      <h2>
+        {{ editingId() ? 'تعديل التصنيف' : 'إضافة تصنيف جديد' }}
+      </h2>
+
+      <form (ngSubmit)="saveCategory()">
+        <label for="category-name">اسم التصنيف</label>
+        <input
+          id="category-name"
+          name="categoryName"
+          type="text"
+          required
+          maxlength="80"
+          placeholder="مثال: منظمات شحن"
+          [ngModel]="categoryName()"
+          (ngModelChange)="updateCategoryName($event)"
+        />
+
+        @if (errorMessage()) {
+          <p class="form-error" role="alert">
+            {{ errorMessage() }}
+          </p>
+        }
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit">
+            {{ editingId() ? 'حفظ التعديلات' : 'إضافة التصنيف' }}
+          </button>
+
+          @if (editingId()) {
+            <button
+              class="secondary-button"
+              type="button"
+              (click)="cancelEdit()"
+            >
+              إلغاء
+            </button>
+          }
+        </div>
+      </form>
+    </article>
+
+    <article class="category-card category-list">
+      <header class="list-header">
+        <h2>التصنيفات</h2>
+
+        <input
+          class="search-input"
+          type="search"
+          aria-label="البحث عن تصنيف"
+          placeholder="ابحث عن تصنيف..."
+          [value]="searchTerm()"
+          (input)="updateSearch($any($event.target).value)"
+        />
+      </header>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">اسم التصنيف</th>
+              <th scope="col">عدد المنتجات</th>
+              <th scope="col">الإجراءات</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (category of filteredCategories(); track category.id) {
+              <tr>
+                <td>
+                  <strong>{{ category.name }}</strong>
+                </td>
+
+                <td>
+                  <span class="product-count">
+                    {{ category.productCount }}
+                  </span>
+                </td>
+
+                <td>
+                  <div class="row-actions">
+                    <button
+                      class="secondary-button"
+                      type="button"
+                      (click)="startEdit(category)"
+                    >
+                      تعديل
+                    </button>
+
+                    <button
+                      class="danger-button"
+                      type="button"
+                      (click)="deleteCategory(category)"
+                    >
+                      حذف
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-state">
+                  لا توجد تصنيفات مطابقة للبحث.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</section>

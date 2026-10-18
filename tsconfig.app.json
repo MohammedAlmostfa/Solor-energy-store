@@ -9,7 +9,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/admin/pages/orders-page"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

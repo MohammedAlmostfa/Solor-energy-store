@@ -1,0 +1,142 @@
+
+<div class="form-backdrop" (click)="cancel.emit()">
+  <section
+    class="product-form-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="product-form-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="form-header">
+      <div>
+        <h3 id="product-form-title">
+          {{ product() ? 'تعديل المنتج' : 'إضافة منتج جديد' }}
+        </h3>
+
+        <p class="text-muted">أدخل بيانات المنتج وتفاصيل المخزون.</p>
+      </div>
+
+      <button
+        class="close-button"
+        type="button"
+        aria-label="إغلاق"
+        (click)="cancel.emit()"
+      >
+        ×
+      </button>
+    </header>
+
+    <form #productForm="ngForm" (ngSubmit)="submitForm()">
+      <div class="form-grid">
+        <label class="form-field">
+          <span>اسم المنتج *</span>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="formModel.name"
+            required
+            maxlength="120"
+            placeholder="مثلاً: لوح شمسي"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>التصنيف *</span>
+          <select
+            name="category"
+            [(ngModel)]="formModel.category"
+            required
+          >
+            <option value="solar-panel">ألواح شمسية</option>
+            <option value="inverter">عاكسات كهربائية</option>
+            <option value="battery">بطاريات</option>
+            <option value="accessory">ملحقات</option>
+          </select>
+        </label>
+
+        <label class="form-field full-width">
+          <span>الوصف *</span>
+          <textarea
+            name="description"
+            [(ngModel)]="formModel.description"
+            required
+            maxlength="1000"
+            rows="3"
+            placeholder="وصف مختصر للمنتج"
+          ></textarea>
+        </label>
+
+        <label class="form-field">
+          <span>السعر *</span>
+          <input
+            type="number"
+            name="price"
+            [(ngModel)]="formModel.price"
+            required
+            min="0"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>الاستطاعة بالواط *</span>
+          <input
+            type="number"
+            name="powerWatts"
+            [(ngModel)]="formModel.powerWatts"
+            required
+            min="0"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>كمية المخزون *</span>
+          <input
+            type="number"
+            name="stock"
+            [(ngModel)]="formModel.stock"
+            required
+            min="0"
+            step="1"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>رابط الصورة *</span>
+          <input
+            type="url"
+            name="imageUrl"
+            [(ngModel)]="formModel.imageUrl"
+            required
+            placeholder="https://example.com/product.jpg"
+          />
+        </label>
+
+        <label class="form-field full-width">
+          <span>حالة المنتج</span>
+          <select name="isActive" [(ngModel)]="formModel.isActive">
+            <option [ngValue]="true">فعّال</option>
+            <option [ngValue]="false">غير فعّال</option>
+          </select>
+        </label>
+      </div>
+
+      <footer class="form-actions">
+        <button
+          class="cancel-button"
+          type="button"
+          (click)="cancel.emit()"
+        >
+          إلغاء
+        </button>
+
+        <button
+          class="primary-action"
+          type="submit"
+          [disabled]="productForm.invalid"
+        >
+          {{ product() ? 'حفظ التعديلات' : 'إضافة المنتج' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ProductCategory } from '../../models/product.model';
+import { ProductCategory } from '../../../../../models/product.model';
 
 export interface HomeCategory {
   value: ProductCategory;

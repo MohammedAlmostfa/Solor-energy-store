@@ -46,7 +46,7 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2);
   color: var(--home-gold-dark);
   font-size: 0.9rem;
   font-weight: 700;

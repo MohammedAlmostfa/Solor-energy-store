@@ -1,0 +1,150 @@
+
+<section class="orders-page" dir="rtl">
+  <header class="page-header">
+    <div>
+      <h1>إدارة الطلبات</h1>
+      <p class="text-muted">
+        متابعة طلبات العملاء وإدارة حالاتها.
+      </p>
+    </div>
+
+    <span class="order-count">
+      {{ totalOrders() }} طلب
+    </span>
+  </header>
+
+  <section class="stats-grid" aria-label="إحصائيات الطلبات">
+    <article class="stat-card">
+      <span class="stat-label">إجمالي الطلبات</span>
+      <strong class="stat-value">{{ totalOrders() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">قيد الانتظار</span>
+      <strong class="stat-value">{{ pendingOrders() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">قيد التجهيز</span>
+      <strong class="stat-value">{{ processingOrders() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">الطلبات المكتملة</span>
+      <strong class="stat-value">{{ completedOrders() }}</strong>
+    </article>
+  </section>
+
+  <section class="orders-card">
+    <div class="filters">
+      <label class="search-field">
+        <span class="visually-hidden">البحث عن طلب</span>
+        <input
+          type="search"
+          placeholder="ابحث برقم الطلب أو اسم العميل أو الهاتف..."
+          [value]="searchTerm()"
+          (input)="updateSearch($any($event.target).value)"
+        />
+      </label>
+
+      <label class="status-filter">
+        <span class="visually-hidden">فلترة حسب الحالة</span>
+        <select
+          [value]="selectedStatus()"
+          (change)="updateStatusFilter($any($event.target).value)"
+        >
+          <option value="all">كل الحالات</option>
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">
+              {{ option.label }}
+            </option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">رقم الطلب</th>
+            <th scope="col">العميل</th>
+            <th scope="col">تاريخ الطلب</th>
+            <th scope="col">عدد المنتجات</th>
+            <th scope="col">الإجمالي</th>
+            <th scope="col">الحالة</th>
+            <th scope="col">تغيير الحالة</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (order of filteredOrders(); track order.id) {
+            <tr>
+              <td>
+                <strong class="order-number">
+                  {{ order.orderNumber }}
+                </strong>
+              </td>
+
+              <td>
+                <div class="customer-info">
+                  <strong>{{ order.customerName }}</strong>
+                  <span>{{ order.customerPhone }}</span>
+                </div>
+              </td>
+
+              <td>{{ order.createdAt | date: 'yyyy/MM/dd' }}</td>
+
+              <td>{{ order.itemsCount }}</td>
+
+              <td class="order-total">
+                {{ order.total | number }} ل.س
+              </td>
+
+              <td>
+                <span
+                  class="status-badge"
+                  [class.status-pending]="order.status === 'pending'"
+                  [class.status-processing]="order.status === 'processing'"
+                  [class.status-completed]="order.status === 'completed'"
+                  [class.status-cancelled]="order.status === 'cancelled'"
+                >
+                  {{ statusLabels[order.status] }}
+                </span>
+              </td>
+
+              <td>
+                <label class="visually-hidden" [attr.for]="'status-' + order.id">
+                  تغيير حالة الطلب {{ order.orderNumber }}
+                </label>
+
+                <select
+                  class="status-select"
+                  [id]="'status-' + order.id"
+                  [value]="order.status"
+                  (change)="updateOrderStatus(order, $any($event.target).value)"
+                >
+                  @for (option of statusOptions; track option.value) {
+                    <option [value]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">
+                لا توجد طلبات تطابق معايير البحث.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="table-footer">
+      عرض {{ filteredOrders().length }} من {{ totalOrders() }} طلب
+    </footer>
+  </section>
+</section>

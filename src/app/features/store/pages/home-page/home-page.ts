@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { HomeCategoriesComponent } from '../../components/home-categories/home-categories';
+import { HomeCategoriesComponent } from './components/components/home-categories/home-categories';
 import { AddToCartResult } from '../../models/add-to-cart-result.model';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
@@ -17,18 +17,13 @@ import {
   PRODUCT_CATEGORY_LABELS,
 } from '../../utils/product-labels';
 
-import { HomeHeroComponent } from '../../components/home-hero/home-hero';
-import { HomeFeaturedComponent } from '../../components/home-featured/home-featured';
-import { HomeBenefitsComponent } from '../../components/home-benefits/home-benefits';
-import { HomeTestimonialsComponent } from '../../components/home-testimonials/home-testimonials';
-import { HomeContactComponent } from '../../components/home-contact/home-contact';
+import { HomeHeroComponent } from './components/components/home-hero/home-hero';
+import { HomeFeaturedComponent } from './components/components/home-featured/home-featured';
+import { HomeBenefitsComponent } from './components/components/home-benefits/home-benefits';
+import { HomeTestimonialsComponent } from './components/components/home-testimonials/home-testimonials';
+import { HomeContactComponent } from './components/components/home-contact/home-contact';
 
-const CART_FEEDBACK_MESSAGES: Record<AddToCartResult, string> = {
-  added: 'تمت إضافة المنتج إلى السلة.',
-  'out-of-stock': 'هذا المنتج غير متوفر حاليًا.',
-  inactive: 'هذا المنتج غير متاح للشراء.',
-  'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
-};
+import { CART_FEEDBACK_MESSAGES } from '../../utils/cart-feedback-messages';
 
 @Component({
   selector: 'app-home-page',
@@ -62,9 +57,9 @@ export class HomePage {
 
   readonly cartFeedback = signal<string | null>(null);
 
-  addToCart(product: Product): void {
-    const result = this.cartService.addProduct(product);
+addToCart(product: Product): void {
+  const result = this.cartService.addProduct(product);
 
-    this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
-  }
+  this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
+}
 }

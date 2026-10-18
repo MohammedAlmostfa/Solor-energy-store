@@ -1,3 +1,6 @@
+
+//_tokens.scss
+
 :root {
   // Colors
   --color-primary: #f5b82e;
@@ -13,7 +16,8 @@
 
   --color-success: #15803d;
   --color-danger: #b91c1c;
-
+--color-success-background: #dcfce7;
+--color-danger-background: #fee2e2;
   // Typography
   --font-family-base: 'Cairo', Tahoma, sans-serif;
 
@@ -45,6 +49,7 @@
 
   // Layout
   --container-max-width: 75rem;
+  --shadow-lg: 0 12px 30px rgb(36 50 71 / 12%);
 }
 
 [data-theme='dark'] {

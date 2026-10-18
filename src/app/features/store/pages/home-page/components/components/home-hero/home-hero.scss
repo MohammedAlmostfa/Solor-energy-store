@@ -35,9 +35,9 @@
   align-items: center;
   gap: 9px;
   margin-bottom: 22px;
-  padding: 8px 14px;
+  padding: var(--spacing-2) 14px;
   border: 1px solid rgb(189 133 14 / 22%);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: rgb(245 184 46 / 10%);
   color: var(--home-gold-dark);
   font-size: 0.875rem;
@@ -80,21 +80,21 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-3);
   margin-top: 30px;
 }
 
 .hero-trust {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px 24px;
+  gap: var(--spacing-4) var(--spacing-6);
   margin-top: 32px;
 }
 
 .trust-item {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2);
   color: var(--home-muted);
   font-size: 0.875rem;
   font-weight: 600;
@@ -149,7 +149,8 @@
   aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(135deg, #ffdf75, #f5b82e);
-  box-shadow: 0 0 0 14px rgb(245 184 46 / 10%),
+  box-shadow:
+    0 0 0 14px rgb(245 184 46 / 10%),
     0 0 55px rgb(245 184 46 / 25%);
 }
 
@@ -194,7 +195,7 @@
   display: grid;
   width: min(76%, 330px);
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: var(--spacing-2);
   transform: translateX(-50%) perspective(500px) rotateX(12deg)
     rotate(-8deg);
 }
@@ -247,7 +248,7 @@
   bottom: 12%;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-3);
   padding: 14px 18px;
   border: 1px solid rgb(229 233 239 / 90%);
   border-radius: 16px;
@@ -327,7 +328,7 @@
 @media (max-width: 1000px) {
   .hero {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
-    gap: 24px;
+    gap: var(--spacing-6);
     padding: 36px;
   }
 
@@ -344,7 +345,7 @@
 @media (max-width: 680px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--spacing-3);
     padding: 28px 22px;
     border-radius: 22px;
   }
@@ -376,7 +377,7 @@
   }
 
   .hero-trust {
-    gap: 12px 18px;
+    gap: var(--spacing-3) 18px;
     margin-top: 24px;
   }
 
@@ -429,7 +430,7 @@
   }
 
   .visual-label {
-    gap: 8px;
+    gap: var(--spacing-2);
     padding: 8px 10px;
   }
 }

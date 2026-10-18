@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Product } from '../../models/product.model';
-import { ProductsGridComponent } from '../../components/products-grid/products-grid';
+import { Product } from '../../../../../models/product.model';
+import { ProductsGridComponent } from '../../../../../components/products-grid/products-grid';
 
 @Component({
   selector: 'app-home-featured',

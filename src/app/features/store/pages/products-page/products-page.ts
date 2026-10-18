@@ -16,6 +16,7 @@ import { AddToCartResult } from '../../models/add-to-cart-result.model';
 import { Product, ProductCategory } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { ProductsService } from '../../services/products';
+import { CART_FEEDBACK_MESSAGES } from '../../utils/cart-feedback-messages';
 import {
   PRODUCT_CATEGORIES,
   PRODUCT_CATEGORY_LABELS,
@@ -80,15 +81,8 @@ export class ProductsPage {
   }
 
   addToCart(product: Product): void {
-    const result = this.cartService.addProduct(product);
+  const result = this.cartService.addProduct(product);
 
-    const messages: Record<AddToCartResult, string> = {
-      added: 'تمت إضافة المنتج إلى السلة.',
-      'out-of-stock': 'هذا المنتج غير متوفر حالياً.',
-      inactive: 'هذا المنتج غير متاح للشراء.',
-      'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
-    };
-
-    this.cartFeedback.set(messages[result]);
-  }
+  this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
+}
 }

@@ -1,1 +1,135 @@
-<p>dashboard-page works!</p>
+
+<section class="dashboard-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">نظرة عامة</p>
+      <h2>أهلاً بك في لوحة الإدارة</h2>
+      <p class="page-description">
+        تابع حالة المنتجات والمخزون من مكان واحد.
+      </p>
+    </div>
+
+    <a class="primary-action" routerLink="/admin/products">
+      إدارة المنتجات
+      <span aria-hidden="true">←</span>
+    </a>
+  </header>
+
+  <section class="metrics-grid" aria-label="مؤشرات المتجر">
+    <article class="metric-card">
+      <div class="metric-top">
+        <span class="metric-icon" aria-hidden="true">▦</span>
+        <span class="metric-label">المنتجات المتاحة</span>
+      </div>
+
+      <p class="metric-value">{{ totalProducts() | number }}</p>
+      <p class="metric-note">عدد المنتجات التي تعرضها الخدمة</p>
+    </article>
+
+    <article class="metric-card">
+      <div class="metric-top">
+        <span class="metric-icon" aria-hidden="true">▤</span>
+        <span class="metric-label">إجمالي الوحدات</span>
+      </div>
+
+      <p class="metric-value">{{ totalStock() | number }}</p>
+      <p class="metric-note">مجموع الكميات المسجلة للمخزون</p>
+    </article>
+
+    <article class="metric-card">
+      <div class="metric-top">
+        <span class="metric-icon warning" aria-hidden="true">!</span>
+        <span class="metric-label">مخزون منخفض</span>
+      </div>
+
+      <p class="metric-value">{{ lowStockCount() | number }}</p>
+      <p class="metric-note">منتجات كميتها بين 1 و5</p>
+    </article>
+
+    <article class="metric-card">
+      <div class="metric-top">
+        <span class="metric-icon danger" aria-hidden="true">×</span>
+        <span class="metric-label">نفد المخزون</span>
+      </div>
+
+      <p class="metric-value">{{ outOfStockProducts().length | number }}</p>
+      <p class="metric-note">منتجات كميتها صفر</p>
+    </article>
+  </section>
+
+  <section class="dashboard-panel">
+    <div class="panel-heading">
+      <div>
+        <h3>تنبيهات المخزون</h3>
+        <p class="panel-description">
+          المنتجات التي تحتاج إلى متابعة.
+        </p>
+      </div>
+
+      <span class="panel-count">{{ lowStockCount() }} منتجات</span>
+    </div>
+
+    @if (lowStockProducts().length > 0) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">المنتج</th>
+              <th scope="col">التصنيف</th>
+              <th scope="col">السعر</th>
+              <th scope="col">الكمية المتبقية</th>
+              <th scope="col">الحالة</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of lowStockProducts(); track product.id) {
+              <tr>
+                <td>
+                  <div class="product-cell">
+                    <img
+                      [src]="product.imageUrl"
+                      [alt]="product.name"
+                      loading="lazy"
+                    />
+                    <span>{{ product.name }}</span>
+                  </div>
+                </td>
+
+                <td>{{ product.category }}</td>
+                <td>{{ product.price | number }}</td>
+                <td>{{ product.stock }}</td>
+
+                <td>
+                  <span class="status-badge">مخزون منخفض</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <span class="empty-icon" aria-hidden="true">✓</span>
+        <h4>لا توجد تنبيهات حالياً</h4>
+        <p>لا توجد منتجات ضمن حد المخزون المنخفض.</p>
+      </div>
+    }
+  </section>
+
+  <section class="dashboard-panel inventory-panel">
+    <div class="panel-heading">
+      <div>
+        <h3>قيمة المخزون</h3>
+        <p class="panel-description">
+          مجموع السعر مضروباً بالكمية لكل منتج.
+        </p>
+      </div>
+    </div>
+
+    <p class="inventory-value">{{ inventoryValue() | number }}</p>
+    <p class="inventory-note">
+      القيمة محسوبة بحسب أسعار المنتجات المسجلة، دون تحديد عملة أو احتساب تكاليف أخرى.
+    </p>
+  </section>
+</section>

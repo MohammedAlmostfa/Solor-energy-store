@@ -1,3 +1,4 @@
+
 :host {
   display: block;
   min-width: 0;
@@ -8,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  gap: var(--spacing-8);
   min-height: 300px;
   overflow: hidden;
   padding: clamp(28px, 5vw, 56px);
@@ -25,7 +26,7 @@
 
 .section-eyebrow {
   display: inline-block;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-3);
   color: var(--home-gold, #f5b82e);
   font-size: 0.9rem;
   font-weight: 700;
@@ -43,7 +44,7 @@
 
 .contact-description {
   max-width: 540px;
-  margin: 16px 0 28px;
+  margin: var(--spacing-4) 0 28px;
   color: rgb(255 255 255 / 75%);
   line-height: 2;
 }
@@ -51,7 +52,7 @@
 .contact-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--spacing-3);
 }
 
 .contact-button {
