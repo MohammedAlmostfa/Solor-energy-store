@@ -1,23 +1,10 @@
 
 <section class="products-page" dir="rtl">
-  <header class="page-header">
-    <div class="page-title">
-      <h1>إدارة المنتجات</h1>
-      <p class="page-description">
-        تابع منتجات المتجر وحالة توفرها وكميات المخزون.
-      </p>
-    </div>
-
-    <div class="page-header__actions">
-      <span class="product-count">
-        {{ products().length | number }} منتج
-      </span>
-      <app-button type="button" (clicked)="openCreateForm()">
-        <span aria-hidden="true">＋</span>
-        إضافة منتج
-      </app-button>
-    </div>
-  </header>
+<app-admin-page-header
+  eyebrow="إدارة المتجر"
+  title="إدارة الطلبات"
+  description="تابع طلبات العملاء وأدر حالات الطلبات."
+/>
 
   @if (isFormOpen()) {
     <app-product-form

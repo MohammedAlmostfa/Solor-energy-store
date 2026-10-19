@@ -1,0 +1,24 @@
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-title {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+}
+
+.page-title h1 {
+  margin: 0;
+}
+
+.page-description {
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+}

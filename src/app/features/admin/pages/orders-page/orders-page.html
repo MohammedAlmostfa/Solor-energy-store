@@ -1,16 +1,9 @@
 <section class="orders-page" dir="rtl">
-  <header class="page-header">
-    <div class="page-title">
-      <h1>إدارة الطلبات</h1>
-      <p class="text-muted">
-        متابعة طلبات العملاء وإدارة حالاتها.
-      </p>
-    </div>
-
-    <span class="order-count">
-      {{ totalOrders() }} طلب
-    </span>
-  </header>
+<app-admin-page-header
+  eyebrow="إدارة المتجر"
+  title="إدارة الطلبات"
+  description="تابع طلبات العملاء وأدر حالات الطلبات."
+/>
 
   <section class="stats-grid" aria-label="إحصائيات الطلبات">
     <app-stat-card

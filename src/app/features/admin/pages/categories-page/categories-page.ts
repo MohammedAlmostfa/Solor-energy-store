@@ -19,6 +19,7 @@ import {
 } from '../../components/data-table/data-table';
 import { DataTableCellTemplateDirective } from '../../components/data-table/data-table-cell-template';
 import { StatCardComponent } from '../../components/stat-card/stat-card';
+import { AdminPageHeaderComponent } from '../../components/page-header/page-header';
 
 @Component({
   selector: 'app-categories-page',
@@ -30,6 +31,7 @@ import { StatCardComponent } from '../../components/stat-card/stat-card';
     DataTableComponent,
     DataTableCellTemplateDirective,
     StatCardComponent,
+    AdminPageHeaderComponent
   ],
   templateUrl: './categories-page.html',
   styleUrl: './categories-page.scss',

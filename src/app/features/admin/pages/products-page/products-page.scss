@@ -17,35 +17,6 @@
   gap: var(--spacing-4);
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-4);
-}
-
-.page-title {
-  min-width: 0;
-}
-
-.page-title h1 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-2xl);
-}
-
-.page-description {
-  margin: var(--spacing-2) 0 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.page-header__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-4);
-  flex-shrink: 0;
-}
 
 .product-count {
   color: var(--color-text-muted);

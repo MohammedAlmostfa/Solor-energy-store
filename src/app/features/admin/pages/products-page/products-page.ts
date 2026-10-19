@@ -27,6 +27,7 @@ import {
   type ProductFormData,
 } from '../../components/product-form/product-form';
 import { StatCardComponent } from '../../components/stat-card/stat-card';
+import { AdminPageHeaderComponent } from '../../components/page-header/page-header';
 
 @Component({
   selector: 'app-products-page',
@@ -40,6 +41,7 @@ import { StatCardComponent } from '../../components/stat-card/stat-card';
     ProductFormComponent,
     DataTableComponent,
     DataTableCellTemplateDirective,
+    AdminPageHeaderComponent
   ],
   templateUrl: './products-page.html',
   styleUrl: './products-page.scss',

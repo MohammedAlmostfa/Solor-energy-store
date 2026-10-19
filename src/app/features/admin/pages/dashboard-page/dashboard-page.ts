@@ -11,7 +11,7 @@ import { DecimalPipe } from '@angular/common';
 import { CategoriesService } from '../../../catalog/services/categories';
 import { ProductsService } from '../../../catalog/services/products';
 import { Product } from '../../../catalog/models/product.model';
-
+import { AdminPageHeaderComponent } from '../../components/page-header/page-header';
 import {
   DataTableComponent,
   type TableColumn,
@@ -29,6 +29,7 @@ import { OrdersService } from '../../services/orders';
     DataTableComponent,
     DataTableCellTemplateDirective,
     StatCardComponent,
+    AdminPageHeaderComponent,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',

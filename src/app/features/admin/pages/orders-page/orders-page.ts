@@ -21,6 +21,7 @@ import {
   type Order,
   type OrderStatus,
 } from '../../models/order.model';
+import { AdminPageHeaderComponent } from '../../components/page-header/page-header';
 
 function isOrderStatus(value: string): value is OrderStatus {
   return ORDER_STATUS_OPTIONS.some((option) => option.value === value);
@@ -35,6 +36,7 @@ function isOrderStatus(value: string): value is OrderStatus {
     DataTableComponent,
     DataTableCellTemplateDirective,
     StatCardComponent,
+    AdminPageHeaderComponent
   ],
   templateUrl: './orders-page.html',
   styleUrl: './orders-page.scss',
