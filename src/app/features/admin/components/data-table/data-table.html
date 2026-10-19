@@ -18,7 +18,7 @@
 
       <tbody>
         @if (rows().length > 0) {
-          @for (row of rows(); track $index) {
+          @for (row of rows(); track row) {
             <tr>
               @for (column of columns(); track column.key) {
                 <td

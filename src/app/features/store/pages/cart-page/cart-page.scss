@@ -66,6 +66,12 @@
   font-weight: 700;
 }
 
+.cart-item__warning {
+  margin-top: var(--spacing-2);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+
 .cart-item__actions {
   display: grid;
   justify-items: stretch;

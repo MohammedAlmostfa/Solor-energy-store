@@ -2,8 +2,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { MOCK_CATEGORIES } from '../data/categories.data';
-import { Category } from '../models/category.model';
-import { ProductsService } from '../../store/services/products';
+import { Category, CategoryOption } from '../models/category.model';
+import { ProductsService } from './products';
 
 export type AddCategoryResult =
   | { success: true; category: Category }
@@ -25,6 +25,23 @@ export class CategoriesService {
   );
 
   readonly allCategories = this.categoriesState.asReadonly();
+
+  readonly categoryOptions = computed<CategoryOption[]>(() =>
+    this.categoriesState().map((category) => ({
+      value: category.id,
+      label: category.name,
+    })),
+  );
+
+  readonly categoryLabels = computed(() => {
+    const labels: Record<string, string> = {};
+
+    for (const { id, name } of this.categoriesState()) {
+      labels[id] = name;
+    }
+
+    return labels;
+  });
 
   readonly categoriesWithCounts = computed(() => {
     const products = this.productsService.allProducts();
@@ -50,8 +67,15 @@ export class CategoriesService {
       return { success: false, reason: 'duplicate' };
     }
 
+    let id = `category-${Date.now()}`;
+    let suffix = 1;
+    while (this.categoriesState().some((category) => category.id === id)) {
+      id = `category-${Date.now()}-${suffix}`;
+      suffix += 1;
+    }
+
     const category: Category = {
-      id: `category-${Date.now()}`,
+      id,
       name: normalizedName,
     };
 

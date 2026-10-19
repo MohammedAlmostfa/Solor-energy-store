@@ -6,14 +6,19 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 
 import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
-import { ProductsService } from '../../../store/services/products';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
+import { CategoriesService } from '../../../catalog/services/categories';
+import { ProductsService } from '../../../catalog/services/products';
 import {
   Product,
   ProductCategory,
-} from '../../../store/models/product.model';
+} from '../../../catalog/models/product.model';
+import { filterProductsBySearchAndCategory } from '../../../catalog/utils/filter-products';
 
 import { DataTableComponent, type TableColumn } from '../../components/data-table/data-table';
 import { DataTableCellTemplateDirective } from '../../components/data-table/data-table-cell-template';
@@ -28,7 +33,9 @@ import { StatCardComponent } from '../../components/stat-card/stat-card';
   standalone: true,
   imports: [
     DecimalPipe,
+    ReactiveFormsModule,
     AppButtonComponent,
+    FormFieldComponent,
     StatCardComponent,
     ProductFormComponent,
     DataTableComponent,
@@ -40,13 +47,29 @@ import { StatCardComponent } from '../../components/stat-card/stat-card';
 })
 export class ProductsPageComponent {
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
 
   readonly products = this.productsService.allProducts;
+  readonly categories = this.categoriesService.allCategories;
 
-  // Search and filters
-  readonly searchTerm = signal('');
-  readonly selectedCategory = signal<ProductCategory | 'all'>('all');
-  readonly selectedStatus = signal<'all' | 'active' | 'inactive'>('all');
+  readonly searchControl = new FormControl('', { nonNullable: true });
+  readonly categoryControl = new FormControl<ProductCategory | 'all'>(
+    'all',
+    { nonNullable: true },
+  );
+  readonly statusControl = new FormControl<'all' | 'active' | 'inactive'>(
+    'all',
+    { nonNullable: true },
+  );
+  readonly searchTerm = toSignal(this.searchControl.valueChanges, {
+    initialValue: this.searchControl.value,
+  });
+  readonly selectedCategory = toSignal(this.categoryControl.valueChanges, {
+    initialValue: this.categoryControl.value,
+  });
+  readonly selectedStatus = toSignal(this.statusControl.valueChanges, {
+    initialValue: this.statusControl.value,
+  });
 
   // Product form state
   readonly isFormOpen = signal(false);
@@ -63,34 +86,23 @@ export class ProductsPageComponent {
     { key: 'actions', label: 'الإجراءات' },
   ];
 
-  readonly categoryLabels: Record<ProductCategory, string> = {
-    'solar-panel': 'ألواح شمسية',
-    inverter: 'عاكسات كهربائية',
-    battery: 'بطاريات',
-    accessory: 'ملحقات',
-  };
+  readonly categoryLabels = this.categoriesService.categoryLabels;
 
   // Filtered products
   readonly filteredProducts = computed(() => {
-    const search = this.searchTerm().trim().toLocaleLowerCase();
     const category = this.selectedCategory();
     const status = this.selectedStatus();
 
-    return this.products().filter((product) => {
-      const matchesSearch =
-        !search ||
-        product.name.toLocaleLowerCase().includes(search) ||
-        product.description.toLocaleLowerCase().includes(search);
-
-      const matchesCategory =
-        category === 'all' || product.category === category;
-
-      const matchesStatus =
+    return filterProductsBySearchAndCategory(
+      this.products(),
+      this.searchTerm(),
+      category,
+    ).filter((product) => {
+      return (
         status === 'all' ||
         (status === 'active' && product.isActive) ||
-        (status === 'inactive' && !product.isActive);
-
-      return matchesSearch && matchesCategory && matchesStatus;
+        (status === 'inactive' && !product.isActive)
+      );
     });
   });
 
@@ -109,19 +121,6 @@ export class ProductsPageComponent {
       0,
     ),
   );
-
-  // Filter handlers
-  updateSearch(value: string): void {
-    this.searchTerm.set(value);
-  }
-
-  updateCategory(value: string): void {
-    this.selectedCategory.set(value as ProductCategory | 'all');
-  }
-
-  updateStatus(value: string): void {
-    this.selectedStatus.set(value as 'all' | 'active' | 'inactive');
-  }
 
   // Form handlers
   openCreateForm(): void {
@@ -171,4 +170,3 @@ export class ProductsPageComponent {
     }
   }
 }
-

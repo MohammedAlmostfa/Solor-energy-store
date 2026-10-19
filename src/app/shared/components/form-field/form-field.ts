@@ -5,6 +5,7 @@ import {
   Component,
   DestroyRef,
   OnInit,
+  ViewEncapsulation,
   inject,
   input,
 } from '@angular/core';
@@ -22,6 +23,7 @@ export interface FormFieldError {
   templateUrl: './form-field.html',
   styleUrl: './form-field.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class FormFieldComponent implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

@@ -9,11 +9,11 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { AddToCartResult } from '../../models/add-to-cart-result.model';
+import { CategoriesService } from '../../../catalog/services/categories';
 import { CartService } from '../../services/cart.service';
-import { ProductsService } from '../../services/products';
-import { PRODUCT_CATEGORY_LABELS } from '../../utils/product-labels';
+import { ProductsService } from '../../../catalog/services/products';
 import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { CART_FEEDBACK_MESSAGES } from '../../utils/cart-feedback-messages';
 @Component({
   selector: 'app-product-details-page',
   standalone: true,
@@ -28,9 +28,10 @@ imports: [
 export class ProductDetailsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
 
-  readonly categoryLabels = PRODUCT_CATEGORY_LABELS;
+  readonly categoryLabels = this.categoriesService.categoryLabels;
   readonly cartFeedback = signal<string | null>(null);
 
   private readonly routeParams = toSignal(this.route.paramMap, {
@@ -55,14 +56,6 @@ export class ProductDetailsPage {
     }
 
     const result = this.cartService.addProduct(product);
-
-    const messages: Record<AddToCartResult, string> = {
-      added: 'تمت إضافة المنتج إلى السلة.',
-      'out-of-stock': 'هذا المنتج غير متوفر حالياً.',
-      inactive: 'هذا المنتج غير متاح للشراء.',
-      'stock-limit-reached': 'وصلت للحد الأقصى المتوفر من هذا المنتج.',
-    };
-
-    this.cartFeedback.set(messages[result]);
+    this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
   }
 }

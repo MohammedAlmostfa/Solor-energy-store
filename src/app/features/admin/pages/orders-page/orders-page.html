@@ -54,7 +54,7 @@
           type="search"
           placeholder="ابحث برقم الطلب أو اسم العميل أو الهاتف..."
           [value]="searchTerm()"
-          (input)="updateSearch($any($event.target).value)"
+          (input)="updateSearch($event)"
         />
       </label>
 
@@ -63,7 +63,7 @@
 
         <select
           [value]="selectedStatus()"
-          (change)="updateStatusFilter($any($event.target).value)"
+          (change)="updateStatusFilter($event)"
         >
           <option value="all">كل الحالات</option>
 
@@ -132,7 +132,7 @@
           class="status-select"
           [id]="'status-' + order.id"
           [value]="order.status"
-          (change)="updateOrderStatus(order, $any($event.target).value)"
+          (change)="updateOrderStatus(order, $event)"
         >
           @for (option of statusOptions; track option.value) {
             <option [value]="option.value">

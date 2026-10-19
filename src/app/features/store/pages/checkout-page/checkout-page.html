@@ -15,6 +15,13 @@
       <p>أدخل معلوماتك لإتمام عملية الشراء.</p>
     </header>
 
+    @if (!canCheckout()) {
+      <p class="checkout-stock-warning" role="alert">
+        بعض المنتجات لم تعد متاحة أو أن كميتها تتجاوز المخزون الحالي.
+        ارجع إلى السلة لتعديلها قبل المتابعة.
+      </p>
+    }
+
     <div class="checkout-layout">
       <section
         class="checkout-form-panel"
@@ -162,7 +169,7 @@
             ></textarea>
           </app-form-field>
 
-          @if (submitted && checkoutForm.valid) {
+          @if (submitted && checkoutForm.valid && canCheckout()) {
             <p
               class="form-notice"
               role="status"
@@ -175,7 +182,11 @@
           <div class="checkout-actions">
             <a routerLink="/cart">العودة إلى السلة</a>
 
-            <app-button type="submit" variant="primary">
+            <app-button
+              type="submit"
+              variant="primary"
+              [disabled]="!canCheckout()"
+            >
               مراجعة البيانات
             </app-button>
           </div>
@@ -200,12 +211,12 @@
                 <p>الكمية: {{ item.quantity }}</p>
                 <p>
                   سعر القطعة:
-                  {{ item.product.price | number:'1.0-2' }}
+                  {{ item.unitPrice | number:'1.0-2' }}
                 </p>
               </div>
 
               <strong>
-                {{ item.product.price * item.quantity | number:'1.0-2' }}
+                {{ item.unitPrice * item.quantity | number:'1.0-2' }}
               </strong>
             </article>
           }

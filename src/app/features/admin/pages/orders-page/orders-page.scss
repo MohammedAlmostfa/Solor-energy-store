@@ -133,13 +133,13 @@
 }
 
 .status-pending {
-  background: var(--color-warning-background, var(--color-background));
-  color: var(--color-warning, var(--color-text));
+  background: var(--color-warning-background);
+  color: var(--color-warning);
 }
 
 .status-processing {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary);
 }
 
 .status-completed {

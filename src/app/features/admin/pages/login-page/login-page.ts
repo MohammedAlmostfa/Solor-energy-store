@@ -21,7 +21,6 @@ export class LoginPageComponent {
 
   readonly isPasswordVisible = signal(false);
   readonly errorMessage = signal('');
-  readonly isSubmitting = signal(false);
 
   constructor(private readonly router: Router) {}
 

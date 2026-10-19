@@ -1,17 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProductsGrid } from './products-grid';
+import { ProductsGridComponent } from './products-grid';
 
-describe('ProductsGrid', () => {
-  let component: ProductsGrid;
-  let fixture: ComponentFixture<ProductsGrid>;
+describe('ProductsGridComponent', () => {
+  let component: ProductsGridComponent;
+  let fixture: ComponentFixture<ProductsGridComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductsGrid],
+      imports: [ProductsGridComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProductsGrid);
+    fixture = TestBed.createComponent(ProductsGridComponent);
+    fixture.componentRef.setInput('products', []);
+    fixture.componentRef.setInput('categoryLabels', {});
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

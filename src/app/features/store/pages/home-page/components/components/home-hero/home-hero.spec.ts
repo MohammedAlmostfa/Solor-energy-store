@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomeHero } from './home-hero';
+import { provideRouter } from '@angular/router';
+import { HomeHeroComponent } from './home-hero';
 
-describe('HomeHero', () => {
-  let component: HomeHero;
-  let fixture: ComponentFixture<HomeHero>;
+describe('HomeHeroComponent', () => {
+  let component: HomeHeroComponent;
+  let fixture: ComponentFixture<HomeHeroComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeHero],
+      imports: [HomeHeroComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomeHero);
+    fixture = TestBed.createComponent(HomeHeroComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

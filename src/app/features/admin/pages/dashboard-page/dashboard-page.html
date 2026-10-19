@@ -1,57 +1,104 @@
 
-<section class="dashboard-panel">
-  <div class="panel-heading">
-    <div>
-      <h3>تنبيهات المخزون</h3>
-      <p class="panel-description">
-        المنتجات التي تحتاج إلى متابعة.
+<section class="dashboard-page" dir="rtl">
+  <header class="page-header">
+    <div class="page-title">
+      <p class="eyebrow">نظرة عامة</p>
+      <h1>لوحة التحكم</h1>
+      <p class="page-description">
+        تابع أداء متجر طاقة الشمس وأهم مؤشرات المبيعات والمخزون.
       </p>
     </div>
+  </header>
 
-    <span class="panel-count">
-      {{ lowStockProducts().length | number }} منتج
-    </span>
-  </div>
+  <section class="stats-grid" aria-label="إحصائيات المتجر">
+    <app-stat-card
+      label="إجمالي المنتجات"
+      [value]="totalProducts()"
+      description="جميع منتجات المتجر"
+      icon="▦"
+    />
 
-  <app-data-table
-    [columns]="inventoryColumns"
-    [rows]="lowStockProducts()"
-    emptyMessage="لا توجد منتجات ضمن حد المخزون المنخفض."
-  >
-    <ng-template appDataTableCellTemplate="product" let-product>
-      <div class="product-cell">
-        <img
-          [src]="product.imageUrl"
-          [alt]="product.name"
-          loading="lazy"
-        />
-        <span>{{ product.name }}</span>
+    <app-stat-card
+      label="إجمالي الطلبات"
+      [value]="totalOrders()"
+      description="جميع الطلبات المسجلة"
+      icon="▤"
+    />
+
+    <app-stat-card
+      label="طلبات قيد الانتظار"
+      [value]="pendingOrders()"
+      description="تحتاج إلى المراجعة"
+      icon="◷"
+      variant="warning"
+    />
+
+    <app-stat-card
+      label="الطلبات المكتملة"
+      [value]="completedOrders()"
+      description="طلبات تم إنجازها"
+      icon="✓"
+      variant="success"
+    />
+  </section>
+
+  <section class="dashboard-section dashboard-panel">
+    <header class="panel-heading">
+      <div>
+        <h2>منتجات منخفضة المخزون</h2>
+        <p class="panel-description">
+          منتجات قاربت كمياتها على النفاد وتحتاج إلى متابعة.
+        </p>
       </div>
-    </ng-template>
+      <span class="panel-count">{{ lowStockProducts().length }} منتج</span>
+    </header>
 
-    <ng-template appDataTableCellTemplate="category" let-product>
-      {{ categoryLabels[product.category] }}
-    </ng-template>
+    <label class="inventory-search">
+      <span class="visually-hidden">البحث في المنتجات منخفضة المخزون</span>
+      <input
+        type="search"
+        placeholder="ابحث باسم المنتج أو التصنيف..."
+        [value]="inventorySearchTerm()"
+        (input)="updateInventorySearch($event)"
+      />
+    </label>
 
-    <ng-template appDataTableCellTemplate="price" let-product>
-      {{ product.price | number }}
-    </ng-template>
+    <app-data-table
+      [columns]="inventoryColumns"
+      [rows]="filteredLowStockProducts()"
+      emptyMessage="لا توجد منتجات منخفضة المخزون تطابق البحث."
+    >
+      <ng-template appDataTableCellTemplate="product" let-product>
+        <div class="product-cell">
+          <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+          <span>{{ product.name }}</span>
+        </div>
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="stock" let-product>
-      <span
-        class="stock-value"
-        [class.low-stock]="product.stock > 0 && product.stock <= 5"
-        [class.out-of-stock]="product.stock === 0"
-      >
-        {{ product.stock | number }}
-      </span>
-    </ng-template>
+      <ng-template appDataTableCellTemplate="category" let-product>
+        {{ categoryLabels()[product.category] }}
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="status">
-      <span class="status-badge">
-        مخزون منخفض
-      </span>
-    </ng-template>
-  </app-data-table>
+      <ng-template appDataTableCellTemplate="price" let-product>
+        {{ product.price | number }}
+      </ng-template>
+
+      <ng-template appDataTableCellTemplate="stock" let-product>
+        <span class="stock-value low-stock">{{ product.stock | number }}</span>
+      </ng-template>
+
+      <ng-template appDataTableCellTemplate="status" let-product>
+        <span class="status-badge">
+          {{ product.isActive ? 'فعّال' : 'غير فعّال' }}
+        </span>
+      </ng-template>
+    </app-data-table>
+
+    <footer class="table-footer">
+      عرض {{ filteredLowStockProducts().length }} من
+      {{ lowStockProducts().length }} منتج منخفض المخزون
+    </footer>
+  </section>
+
+
 </section>
-

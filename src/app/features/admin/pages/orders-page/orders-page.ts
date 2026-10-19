@@ -16,7 +16,15 @@ import { DataTableCellTemplateDirective } from '../../components/data-table/data
 import { StatCardComponent } from '../../components/stat-card/stat-card';
 
 import { OrdersService } from '../../services/orders';
-import type { Order, OrderStatus } from '../../models/order.model';
+import {
+  ORDER_STATUS_OPTIONS,
+  type Order,
+  type OrderStatus,
+} from '../../models/order.model';
+
+function isOrderStatus(value: string): value is OrderStatus {
+  return ORDER_STATUS_OPTIONS.some((option) => option.value === value);
+}
 
 @Component({
   selector: 'app-orders-page',
@@ -50,19 +58,7 @@ export class OrdersPageComponent {
     { key: 'actions', label: 'تغيير الحالة' },
   ];
 
-  readonly statusOptions: { value: OrderStatus; label: string }[] = [
-    { value: 'pending', label: 'قيد الانتظار' },
-    { value: 'processing', label: 'قيد التجهيز' },
-    { value: 'completed', label: 'مكتمل' },
-    { value: 'cancelled', label: 'ملغي' },
-  ];
-
-  readonly statusLabels: Record<OrderStatus, string> = {
-    pending: 'قيد الانتظار',
-    processing: 'قيد التجهيز',
-    completed: 'مكتمل',
-    cancelled: 'ملغي',
-  };
+  readonly statusOptions = ORDER_STATUS_OPTIONS;
 
   readonly totalOrders = computed(() => this.orders().length);
 
@@ -99,36 +95,49 @@ export class OrdersPageComponent {
     });
   });
 
-  updateSearch(value: string): void {
-    this.searchTerm.set(value);
+  updateSearch(event: Event): void {
+    if (event.target instanceof HTMLInputElement) {
+      this.searchTerm.set(event.target.value);
+    }
   }
 
-  updateStatusFilter(value: string): void {
-    const isValidStatus =
-      value === 'all' ||
-      this.statusOptions.some((option) => option.value === value);
-
-    if (!isValidStatus) {
+  updateStatusFilter(event: Event): void {
+    if (!(event.target instanceof HTMLSelectElement)) {
       return;
     }
 
-    this.selectedStatus.set(value as OrderStatus | 'all');
+    const value = event.target.value;
+    if (value === 'all') {
+      this.selectedStatus.set('all');
+      return;
+    }
+
+    if (isOrderStatus(value)) {
+      this.selectedStatus.set(value);
+    }
   }
 
   getStatusLabel(status: OrderStatus): string {
-    return this.statusLabels[status];
-  }
-
-  updateOrderStatus(order: Order, value: string): void {
-    const isValidStatus = this.statusOptions.some(
-      (option) => option.value === value,
+    const option = ORDER_STATUS_OPTIONS.find(
+      (candidate) => candidate.value === status,
     );
 
-    if (!isValidStatus) {
+    if (!option) {
+      throw new Error(`Missing label for order status "${status}".`);
+    }
+
+    return option.label;
+  }
+
+  updateOrderStatus(order: Order, event: Event): void {
+    if (!(event.target instanceof HTMLSelectElement)) {
       return;
     }
 
-    const status = value as OrderStatus;
+    const status = event.target.value;
+    if (!isOrderStatus(status)) {
+      return;
+    }
 
     if (status === order.status) {
       return;
@@ -137,4 +146,3 @@ export class OrdersPageComponent {
     this.ordersService.updateStatus(order.id, status);
   }
 }
-

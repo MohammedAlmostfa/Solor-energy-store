@@ -8,14 +8,10 @@ import {
 } from '@angular/core';
 
 import { HomeCategoriesComponent } from './components/components/home-categories/home-categories';
-import { AddToCartResult } from '../../models/add-to-cart-result.model';
-import { Product } from '../../models/product.model';
+import { Product } from '../../../catalog/models/product.model';
+import { CategoriesService } from '../../../catalog/services/categories';
 import { CartService } from '../../services/cart.service';
-import { ProductsService } from '../../services/products';
-import {
-  PRODUCT_CATEGORIES,
-  PRODUCT_CATEGORY_LABELS,
-} from '../../utils/product-labels';
+import { ProductsService } from '../../../catalog/services/products';
 
 import { HomeHeroComponent } from './components/components/home-hero/home-hero';
 import { HomeFeaturedComponent } from './components/components/home-featured/home-featured';
@@ -42,24 +38,23 @@ import { CART_FEEDBACK_MESSAGES } from '../../utils/cart-feedback-messages';
 })
 export class HomePage {
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly cartService = inject(CartService);
 
-  readonly products = signal(this.productsService.getProducts());
+  readonly products = this.productsService.activeProducts;
 
   readonly featuredProducts = computed(() =>
-    this.products()
-      .filter((product) => product.isActive)
-      .slice(0, 4),
+    this.products().slice(0, 4),
   );
 
-  readonly categories = PRODUCT_CATEGORIES;
-  readonly categoryLabels = PRODUCT_CATEGORY_LABELS;
+  readonly categories = this.categoriesService.categoryOptions;
+  readonly categoryLabels = this.categoriesService.categoryLabels;
 
   readonly cartFeedback = signal<string | null>(null);
 
-addToCart(product: Product): void {
-  const result = this.cartService.addProduct(product);
+  addToCart(product: Product): void {
+    const result = this.cartService.addProduct(product);
 
-  this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
-}
+    this.cartFeedback.set(CART_FEEDBACK_MESSAGES[result]);
+  }
 }

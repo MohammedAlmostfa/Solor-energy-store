@@ -5,6 +5,12 @@ import {
   input,
 } from '@angular/core';
 
+export interface DataTableCellContext {
+  $implicit: object;
+  row: object;
+  value: unknown;
+}
+
 @Directive({
   selector: 'ng-template[appDataTableCellTemplate]',
   standalone: true,
@@ -15,6 +21,6 @@ export class DataTableCellTemplateDirective {
   });
 
   constructor(
-    readonly template: TemplateRef<any>,
+    readonly template: TemplateRef<DataTableCellContext>,
   ) {}
 }

@@ -44,7 +44,7 @@
     class="product-card__add-button"
     type="button"
     variant="primary"
-
+    [fullWidth]="true"
     [disabled]="!product().isActive || product().stock <= 0"
     (clicked)="onAddToCart()"
   >

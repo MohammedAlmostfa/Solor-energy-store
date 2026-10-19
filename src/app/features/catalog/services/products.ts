@@ -1,5 +1,5 @@
 
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 
 import { Product } from '../models/product.model';
 import { MOCK_PRODUCTS } from '../data/products.data';
@@ -13,14 +13,9 @@ export class ProductsService {
   );
 
   readonly allProducts = this.productsState.asReadonly();
-
-  getProducts(): Product[] {
-    return this.productsState().filter((product) => product.isActive);
-  }
-
-  getAllProducts(): Product[] {
-    return this.productsState();
-  }
+  readonly activeProducts = computed(() =>
+    this.productsState().filter((product) => product.isActive),
+  );
 
   getProductById(id: number): Product | undefined {
     return this.productsState().find(

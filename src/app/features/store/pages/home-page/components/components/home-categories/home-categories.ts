@@ -6,12 +6,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ProductCategory } from '../../../../../models/product.model';
-
-export interface HomeCategory {
-  value: ProductCategory;
-  label: string;
-}
+import { CategoryOption } from '../../../../../../catalog/models/category.model';
 
 @Component({
   selector: 'app-home-categories',
@@ -22,5 +17,5 @@ export interface HomeCategory {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeCategoriesComponent {
-  readonly categories = input.required<readonly HomeCategory[]>();
+  readonly categories = input.required<readonly CategoryOption[]>();
 }

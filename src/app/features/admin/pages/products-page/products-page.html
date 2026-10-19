@@ -1,194 +1,206 @@
 
-<header class="page-header">
-  <div class="page-title">
-    <p class="eyebrow">إدارة المتجر</p>
-    <h2>المنتجات</h2>
-    <p class="page-description">
-      تابع منتجات المتجر وحالة توفرها وكميات المخزون.
-    </p>
-  </div>
-
-  <app-button type="button" (click)="openCreateForm()">
-    <span aria-hidden="true">＋</span>
-    إضافة منتج
-  </app-button>
-</header>
-
-@if (isFormOpen()) {
-  <app-product-form
-    [product]="editingProduct()"
-    (save)="saveProduct($event)"
-    (cancel)="closeForm()"
-  />
-}
-
-<section class="summary-grid" aria-label="ملخص المنتجات">
-  <app-stat-card
-    label="إجمالي المنتجات"
-    [value]="products().length"
-    icon="▦"
-  />
-
-  <app-stat-card
-    label="منتجات فعّالة"
-    [value]="activeProductsCount()"
-    icon="✓"
-    variant="success"
-  />
-
-  <app-stat-card
-    label="منتجات غير فعّالة"
-    [value]="inactiveProductsCount()"
-    icon="!"
-    variant="warning"
-  />
-
-  <app-stat-card
-    label="إجمالي المخزون"
-    [value]="totalStock()"
-    icon="▤"
-  />
-</section>
-
-<!-- Search and filters -->
-<section class="filters-section" aria-label="البحث والتصفية">
-  <div class="filter-field">
-    <label for="product-search">البحث عن منتج</label>
-    <input
-      id="product-search"
-      type="search"
-      [value]="searchTerm()"
-      (input)="updateSearch($any($event.target).value)"
-      placeholder="ابحث باسم المنتج أو وصفه..."
-    />
-  </div>
-
-  <div class="filter-field">
-    <label for="product-category">التصنيف</label>
-    <select
-      id="product-category"
-      [value]="selectedCategory()"
-      (change)="updateCategory($any($event.target).value)"
-    >
-      <option value="all">جميع التصنيفات</option>
-      <option value="solar-panel">ألواح شمسية</option>
-      <option value="inverter">عاكسات كهربائية</option>
-      <option value="battery">بطاريات</option>
-      <option value="accessory">ملحقات</option>
-    </select>
-  </div>
-
-  <div class="filter-field">
-    <label for="product-status">حالة المنتج</label>
-    <select
-      id="product-status"
-      [value]="selectedStatus()"
-      (change)="updateStatus($any($event.target).value)"
-    >
-      <option value="all">جميع الحالات</option>
-      <option value="active">فعّال</option>
-      <option value="inactive">غير فعّال</option>
-    </select>
-  </div>
-</section>
-
-<section
-  class="products-section"
-  aria-labelledby="products-table-title"
->
-  <div class="section-header">
-    <div>
-      <h3 id="products-table-title">قائمة المنتجات</h3>
-      <p class="section-description">
-        إدارة المنتجات وأسعارها ومخزونها وحالة توفرها.
+<section class="products-page" dir="rtl">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>إدارة المنتجات</h1>
+      <p class="page-description">
+        تابع منتجات المتجر وحالة توفرها وكميات المخزون.
       </p>
     </div>
 
-    <span class="results-count">
-      {{ filteredProducts().length | number }} منتج
-    </span>
-  </div>
+    <div class="page-header__actions">
+      <span class="product-count">
+        {{ products().length | number }} منتج
+      </span>
+      <app-button type="button" (clicked)="openCreateForm()">
+        <span aria-hidden="true">＋</span>
+        إضافة منتج
+      </app-button>
+    </div>
+  </header>
 
-  <app-data-table
-    [columns]="tableColumns"
-    [rows]="filteredProducts()"
-    emptyMessage="ما لقينا منتجات مطابقة. جرّب تغيير البحث أو خيارات التصفية."
+  @if (isFormOpen()) {
+    <app-product-form
+      [product]="editingProduct()"
+      [categories]="categories()"
+      (save)="saveProduct($event)"
+      (cancel)="closeForm()"
+    />
+  }
+
+  <section class="summary-grid" aria-label="ملخص المنتجات">
+    <app-stat-card
+      label="إجمالي المنتجات"
+      [value]="products().length"
+      icon="▦"
+    />
+
+    <app-stat-card
+      label="منتجات فعّالة"
+      [value]="activeProductsCount()"
+      icon="✓"
+      variant="success"
+    />
+
+    <app-stat-card
+      label="منتجات غير فعّالة"
+      [value]="inactiveProductsCount()"
+      icon="!"
+      variant="warning"
+    />
+
+    <app-stat-card
+      label="إجمالي المخزون"
+      [value]="totalStock()"
+      icon="▤"
+    />
+  </section>
+
+  <section
+    class="products-card"
+    aria-labelledby="products-table-title"
   >
-    <ng-template appDataTableCellTemplate="product" let-product>
-      <div class="product-info">
-        <img
-          [src]="product.imageUrl"
-          [alt]="product.name"
-          loading="lazy"
+    <section class="filters-section" aria-label="البحث والتصفية">
+      <app-form-field
+        class="filter-field"
+        label="البحث عن منتج"
+        inputId="product-search"
+        [control]="searchControl"
+      >
+        <input
+          id="product-search"
+          type="search"
+          [formControl]="searchControl"
+          placeholder="ابحث باسم المنتج أو وصفه..."
         />
+      </app-form-field>
 
-        <div>
-          <strong>{{ product.name }}</strong>
-          <span class="product-description">
-            {{ product.description }}
-          </span>
+      <app-form-field
+        class="filter-field"
+        label="التصنيف"
+        inputId="product-category"
+        [control]="categoryControl"
+      >
+        <select id="product-category" [formControl]="categoryControl">
+          <option value="all">جميع التصنيفات</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </app-form-field>
+
+      <app-form-field
+        class="filter-field"
+        label="حالة المنتج"
+        inputId="product-status"
+        [control]="statusControl"
+      >
+        <select id="product-status" [formControl]="statusControl">
+          <option value="all">جميع الحالات</option>
+          <option value="active">فعّال</option>
+          <option value="inactive">غير فعّال</option>
+        </select>
+      </app-form-field>
+    </section>
+
+    <div class="section-header">
+      <div>
+        <h2 id="products-table-title">قائمة المنتجات</h2>
+        <p class="section-description">
+          إدارة المنتجات وأسعارها ومخزونها وحالة توفرها.
+        </p>
+      </div>
+
+      <span class="results-count">
+        {{ filteredProducts().length | number }} منتج
+      </span>
+    </div>
+
+    <app-data-table
+      [columns]="tableColumns"
+      [rows]="filteredProducts()"
+      emptyMessage="ما لقينا منتجات مطابقة. جرّب تغيير البحث أو خيارات التصفية."
+    >
+      <ng-template appDataTableCellTemplate="product" let-product>
+        <div class="product-info">
+          <img
+            [src]="product.imageUrl"
+            [alt]="product.name"
+            loading="lazy"
+          />
+
+          <div>
+            <strong>{{ product.name }}</strong>
+            <span class="product-description">
+              {{ product.description }}
+            </span>
+          </div>
         </div>
-      </div>
-    </ng-template>
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="category" let-product>
-      {{ categoryLabels[product.category] }}
-    </ng-template>
+      <ng-template appDataTableCellTemplate="category" let-product>
+        {{ categoryLabels()[product.category] }}
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="price" let-product>
-      {{ product.price | number }}
-    </ng-template>
+      <ng-template appDataTableCellTemplate="price" let-product>
+        {{ product.price | number }}
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="powerWatts" let-product>
-      {{ product.powerWatts | number }} W
-    </ng-template>
+      <ng-template appDataTableCellTemplate="powerWatts" let-product>
+        {{ product.powerWatts | number }} W
+      </ng-template>
 
-    <ng-template appDataTableCellTemplate="stock" let-product>
-      <span
-        class="stock-value"
-        [class.low-stock]="product.stock > 0 && product.stock <= 5"
-        [class.out-of-stock]="product.stock === 0"
-      >
-        {{ product.stock | number }}
-      </span>
-    </ng-template>
-
-    <ng-template appDataTableCellTemplate="status" let-product>
-      <span
-        class="status-badge"
-        [class.status-active]="product.isActive"
-        [class.status-inactive]="!product.isActive"
-      >
-        {{ product.isActive ? 'فعّال' : 'غير فعّال' }}
-      </span>
-    </ng-template>
-
-    <ng-template appDataTableCellTemplate="actions" let-product>
-      <div class="product-actions">
-        <button
-          class="action-button"
-          type="button"
-          (click)="openEditForm(product)"
+      <ng-template appDataTableCellTemplate="stock" let-product>
+        <span
+          class="stock-value"
+          [class.low-stock]="product.stock > 0 && product.stock <= 5"
+          [class.out-of-stock]="product.stock === 0"
         >
-          تعديل
-        </button>
+          {{ product.stock | number }}
+        </span>
+      </ng-template>
 
-        <button
-          class="action-button"
-          type="button"
-          (click)="toggleProductStatus(product)"
+      <ng-template appDataTableCellTemplate="status" let-product>
+        <span
+          class="status-badge"
+          [class.status-active]="product.isActive"
+          [class.status-inactive]="!product.isActive"
         >
-          {{ product.isActive ? 'تعطيل' : 'تفعيل' }}
-        </button>
+          {{ product.isActive ? 'فعّال' : 'غير فعّال' }}
+        </span>
+      </ng-template>
 
-        <button
-          class="action-button delete-action"
-          type="button"
-          (click)="deleteProduct(product)"
-        >
-          حذف
-        </button>
-      </div>
-    </ng-template>
-  </app-data-table>
+      <ng-template appDataTableCellTemplate="actions" let-product>
+        <div class="product-actions">
+          <button
+            class="action-button"
+            type="button"
+            (click)="openEditForm(product)"
+          >
+            تعديل
+          </button>
+
+          <button
+            class="action-button"
+            type="button"
+            (click)="toggleProductStatus(product)"
+          >
+            {{ product.isActive ? 'تعطيل' : 'تفعيل' }}
+          </button>
+
+          <button
+            class="action-button delete-action"
+            type="button"
+            (click)="deleteProduct(product)"
+          >
+            حذف
+          </button>
+        </div>
+      </ng-template>
+    </app-data-table>
+
+    <footer class="table-footer">
+      عرض {{ filteredProducts().length }} من {{ products().length }} منتج
+    </footer>
+  </section>
 </section>

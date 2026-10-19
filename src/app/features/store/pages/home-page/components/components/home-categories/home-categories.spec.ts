@@ -1,17 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomeCategories } from './home-categories';
+import { provideRouter } from '@angular/router';
+import { HomeCategoriesComponent } from './home-categories';
 
-describe('HomeCategories', () => {
-  let component: HomeCategories;
-  let fixture: ComponentFixture<HomeCategories>;
+describe('HomeCategoriesComponent', () => {
+  let component: HomeCategoriesComponent;
+  let fixture: ComponentFixture<HomeCategoriesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeCategories],
+      imports: [HomeCategoriesComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomeCategories);
+    fixture = TestBed.createComponent(HomeCategoriesComponent);
+    fixture.componentRef.setInput('categories', []);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

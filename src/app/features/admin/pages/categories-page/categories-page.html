@@ -10,15 +10,17 @@
   </header>
 
   <section class="stats-grid">
-    <article class="stat-card">
-      <span class="stat-label">إجمالي التصنيفات</span>
-      <strong class="stat-value">{{ totalCategories() }}</strong>
-    </article>
+    <app-stat-card
+      label="إجمالي التصنيفات"
+      [value]="totalCategories()"
+      icon="▧"
+    />
 
-    <article class="stat-card">
-      <span class="stat-label">المنتجات المصنفة</span>
-      <strong class="stat-value">{{ totalAssignedProducts() }}</strong>
-    </article>
+    <app-stat-card
+      label="المنتجات المصنفة"
+      [value]="totalAssignedProducts()"
+      icon="▦"
+    />
   </section>
 
   <section class="category-layout">
@@ -28,17 +30,30 @@
       </h2>
 
       <form (ngSubmit)="saveCategory()">
-        <label for="category-name">اسم التصنيف</label>
-        <input
-          id="category-name"
-          name="categoryName"
-          type="text"
-          required
-          maxlength="80"
-          placeholder="مثال: منظمات شحن"
-          [ngModel]="categoryName()"
-          (ngModelChange)="updateCategoryName($event)"
-        />
+        <app-form-field
+          label="اسم التصنيف"
+          inputId="category-name"
+          [control]="categoryNameControl"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال اسم التصنيف.' },
+            { key: 'maxlength', message: 'يجب ألا يتجاوز اسم التصنيف 80 حرفاً.' }
+          ]"
+        >
+          <input
+            id="category-name"
+            type="text"
+            maxlength="80"
+            placeholder="مثال: منظمات شحن"
+            [formControl]="categoryNameControl"
+            (input)="clearErrorMessage()"
+            [attr.aria-invalid]="categoryNameControl.touched && categoryNameControl.invalid"
+            [attr.aria-describedby]="
+              categoryNameControl.touched && categoryNameControl.invalid
+                ? 'category-name-error'
+                : null
+            "
+          />
+        </app-form-field>
 
         @if (errorMessage()) {
           <p class="form-error" role="alert">
@@ -47,18 +62,18 @@
         }
 
         <div class="form-actions">
-          <button class="primary-button" type="submit">
+          <app-button type="submit" variant="primary">
             {{ editingId() ? 'حفظ التعديلات' : 'إضافة التصنيف' }}
-          </button>
+          </app-button>
 
           @if (editingId()) {
-            <button
-              class="secondary-button"
+            <app-button
               type="button"
-              (click)="cancelEdit()"
+              variant="secondary"
+              (clicked)="cancelEdit()"
             >
               إلغاء
-            </button>
+            </app-button>
           }
         </div>
       </form>
@@ -68,69 +83,53 @@
       <header class="list-header">
         <h2>التصنيفات</h2>
 
-        <input
-          class="search-input"
-          type="search"
-          aria-label="البحث عن تصنيف"
-          placeholder="ابحث عن تصنيف..."
-          [value]="searchTerm()"
-          (input)="updateSearch($any($event.target).value)"
-        />
+        <app-form-field
+          label=""
+          inputId="category-search"
+          [control]="searchControl"
+        >
+          <input
+            id="category-search"
+            type="search"
+            placeholder="ابحث عن تصنيف..."
+            [formControl]="searchControl"
+          />
+        </app-form-field>
       </header>
 
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">اسم التصنيف</th>
-              <th scope="col">عدد المنتجات</th>
-              <th scope="col">الإجراءات</th>
-            </tr>
-          </thead>
+      <app-data-table
+        [columns]="tableColumns"
+        [rows]="filteredCategories()"
+        emptyMessage="لا توجد تصنيفات مطابقة للبحث."
+      >
+        <ng-template appDataTableCellTemplate="name" let-category>
+          <strong>{{ category.name }}</strong>
+        </ng-template>
 
-          <tbody>
-            @for (category of filteredCategories(); track category.id) {
-              <tr>
-                <td>
-                  <strong>{{ category.name }}</strong>
-                </td>
+        <ng-template appDataTableCellTemplate="productCount" let-category>
+          <span class="product-count">{{ category.productCount }}</span>
+        </ng-template>
 
-                <td>
-                  <span class="product-count">
-                    {{ category.productCount }}
-                  </span>
-                </td>
+        <ng-template appDataTableCellTemplate="actions" let-category>
+          <div class="row-actions">
+            <app-button
+              type="button"
+              variant="secondary"
+              (clicked)="startEdit(category)"
+            >
+              تعديل
+            </app-button>
 
-                <td>
-                  <div class="row-actions">
-                    <button
-                      class="secondary-button"
-                      type="button"
-                      (click)="startEdit(category)"
-                    >
-                      تعديل
-                    </button>
-
-                    <button
-                      class="danger-button"
-                      type="button"
-                      (click)="deleteCategory(category)"
-                    >
-                      حذف
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="3" class="empty-state">
-                  لا توجد تصنيفات مطابقة للبحث.
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+            <app-button
+              type="button"
+              variant="danger"
+              (clicked)="deleteCategory(category)"
+            >
+              حذف
+            </app-button>
+          </div>
+        </ng-template>
+      </app-data-table>
     </article>
   </section>
 </section>

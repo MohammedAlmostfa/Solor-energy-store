@@ -2,6 +2,8 @@
 <button
   [type]="type()"
   [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel()"
+  [class.button-full-width]="fullWidth()"
   [class.button-primary]="variant() === 'primary'"
   [class.button-secondary]="variant() === 'secondary'"
   [class.button-danger]="variant() === 'danger'"

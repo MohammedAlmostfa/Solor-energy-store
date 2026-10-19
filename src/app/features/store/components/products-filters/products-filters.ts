@@ -6,8 +6,8 @@ import {
   output,
 } from '@angular/core';
 
-import { ProductCategory } from '../../models/product.model';
-import { SortOption } from '../../utils/filter-products';
+import { ProductCategory } from '../../../catalog/models/product.model';
+import { SortOption } from '../../../catalog/utils/filter-products';
 
 @Component({
   selector: 'app-products-filters',
@@ -51,7 +51,7 @@ export class ProductsFiltersComponent {
       value === 'all' ||
       this.categories().some((category) => category.value === value)
     ) {
-      this.categoryChange.emit(value as ProductCategory | 'all');
+      this.categoryChange.emit(value);
     }
   }
 

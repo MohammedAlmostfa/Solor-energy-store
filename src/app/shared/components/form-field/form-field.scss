@@ -1,26 +1,60 @@
 
-:host {
+app-form-field {
   display: block;
   min-width: 0;
 }
 
-.form-field {
+app-form-field .form-field {
   display: grid;
   gap: var(--spacing-2);
   min-width: 0;
 }
 
-label {
+app-form-field label {
   color: var(--color-text);
   font-weight: 700;
 }
 
-.field-errors {
+app-form-field .form-field > input,
+app-form-field .form-field > select,
+app-form-field .form-field > textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+app-form-field .form-field > input:focus-visible,
+app-form-field .form-field > select:focus-visible,
+app-form-field .form-field > textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+app-form-field .form-field > input[aria-invalid='true'],
+app-form-field .form-field > select[aria-invalid='true'],
+app-form-field .form-field > textarea[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+app-form-field .form-field > input[aria-invalid='true']:focus-visible,
+app-form-field .form-field > select[aria-invalid='true']:focus-visible,
+app-form-field .form-field > textarea[aria-invalid='true']:focus-visible {
+  outline-color: var(--color-danger);
+}
+
+app-form-field .field-errors {
   display: grid;
   gap: var(--spacing-1, 4px);
 }
 
-.field-error {
+app-form-field .field-error {
   margin: 0;
   color: var(--color-danger);
   font-size: var(--font-size-sm);

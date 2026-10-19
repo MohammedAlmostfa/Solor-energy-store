@@ -1,17 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProductsFilters } from './products-filters';
+import { ProductsFiltersComponent } from './products-filters';
 
-describe('ProductsFilters', () => {
-  let component: ProductsFilters;
-  let fixture: ComponentFixture<ProductsFilters>;
+describe('ProductsFiltersComponent', () => {
+  let component: ProductsFiltersComponent;
+  let fixture: ComponentFixture<ProductsFiltersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductsFilters],
+      imports: [ProductsFiltersComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProductsFilters);
+    fixture = TestBed.createComponent(ProductsFiltersComponent);
+    fixture.componentRef.setInput('categories', []);
+    fixture.componentRef.setInput('searchTerm', '');
+    fixture.componentRef.setInput('selectedCategory', 'all');
+    fixture.componentRef.setInput('sortOption', 'default');
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

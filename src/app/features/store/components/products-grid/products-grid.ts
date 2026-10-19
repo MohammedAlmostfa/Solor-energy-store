@@ -6,7 +6,7 @@ import {
   output,
 } from '@angular/core';
 
-import { Product } from '../../models/product.model';
+import { Product } from '../../../catalog/models/product.model';
 import { ProductCardComponent } from '../product-card/product-card';
 
 @Component({

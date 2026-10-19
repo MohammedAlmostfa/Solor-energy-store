@@ -25,6 +25,15 @@
   color: var(--color-text-muted);
 }
 
+.checkout-stock-warning {
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-background);
+  color: var(--color-danger);
+}
+
 .checkout-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(17rem, 1fr);
@@ -55,37 +64,13 @@
 
 .checkout-form app-form-field input,
 .checkout-form app-form-field textarea {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  padding: var(--spacing-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   background: var(--color-background);
-  color: var(--color-text);
-  font: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .checkout-form app-form-field textarea {
   min-height: 7rem;
   resize: vertical;
-}
-
-.checkout-form app-form-field input:focus-visible,
-.checkout-form app-form-field textarea:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-.checkout-form app-form-field input[aria-invalid='true'],
-.checkout-form app-form-field textarea[aria-invalid='true'] {
-  border-color: var(--color-danger);
-}
-
-.checkout-form app-form-field input[aria-invalid='true']:focus-visible,
-.checkout-form app-form-field textarea[aria-invalid='true']:focus-visible {
-  outline-color: var(--color-danger);
 }
 
 .form-notice {

@@ -16,126 +16,243 @@
         <p class="text-muted">أدخل بيانات المنتج وتفاصيل المخزون.</p>
       </div>
 
-      <button
+      <app-button
         class="close-button"
         type="button"
-        aria-label="إغلاق"
-        (click)="cancel.emit()"
+        variant="secondary"
+        ariaLabel="إغلاق"
+        (clicked)="cancel.emit()"
       >
         ×
-      </button>
+      </app-button>
     </header>
 
     <form #productForm="ngForm" (ngSubmit)="submitForm()">
       <div class="form-grid">
-        <label class="form-field">
-          <span>اسم المنتج *</span>
+        <app-form-field
+          class="form-field"
+          label="اسم المنتج *"
+          inputId="product-name"
+          [control]="nameModel.control"
+          [errors]="[{ key: 'required', message: 'يرجى إدخال اسم المنتج.' }]"
+        >
           <input
+            id="product-name"
             type="text"
             name="name"
             [(ngModel)]="formModel.name"
+            #nameModel="ngModel"
             required
             maxlength="120"
             placeholder="مثلاً: لوح شمسي"
+            [attr.aria-invalid]="nameModel.touched && nameModel.invalid"
+            [attr.aria-describedby]="
+              nameModel.touched && nameModel.invalid
+                ? 'product-name-error'
+                : null
+            "
           />
-        </label>
+        </app-form-field>
 
-        <label class="form-field">
-          <span>التصنيف *</span>
+        <app-form-field
+          class="form-field"
+          label="التصنيف *"
+          inputId="product-category"
+          [control]="categoryModel.control"
+          [errors]="[{ key: 'required', message: 'يرجى اختيار تصنيف.' }]"
+        >
           <select
+            id="product-category"
             name="category"
             [(ngModel)]="formModel.category"
+            #categoryModel="ngModel"
             required
+            [attr.aria-invalid]="categoryModel.touched && categoryModel.invalid"
+            [attr.aria-describedby]="
+              categoryModel.touched && categoryModel.invalid
+                ? 'product-category-error'
+                : null
+            "
           >
-            <option value="solar-panel">ألواح شمسية</option>
-            <option value="inverter">عاكسات كهربائية</option>
-            <option value="battery">بطاريات</option>
-            <option value="accessory">ملحقات</option>
+            <option value="" disabled>اختر التصنيف</option>
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
           </select>
-        </label>
+        </app-form-field>
 
-        <label class="form-field full-width">
-          <span>الوصف *</span>
+        <app-form-field
+          class="form-field full-width"
+          label="الوصف *"
+          inputId="product-description"
+          [control]="descriptionModel.control"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال وصف المنتج.' },
+            { key: 'maxlength', message: 'يجب ألا يتجاوز الوصف 1000 حرف.' }
+          ]"
+        >
           <textarea
+            id="product-description"
             name="description"
             [(ngModel)]="formModel.description"
+            #descriptionModel="ngModel"
             required
             maxlength="1000"
             rows="3"
             placeholder="وصف مختصر للمنتج"
+            [attr.aria-invalid]="
+              descriptionModel.touched && descriptionModel.invalid
+            "
+            [attr.aria-describedby]="
+              descriptionModel.touched && descriptionModel.invalid
+                ? 'product-description-error'
+                : null
+            "
           ></textarea>
-        </label>
+        </app-form-field>
 
-        <label class="form-field">
-          <span>السعر *</span>
+        <app-form-field
+          class="form-field"
+          label="السعر *"
+          inputId="product-price"
+          [control]="priceModel.control"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال السعر.' },
+            { key: 'min', message: 'يجب ألا يكون السعر أقل من صفر.' }
+          ]"
+        >
           <input
+            id="product-price"
             type="number"
             name="price"
             [(ngModel)]="formModel.price"
+            #priceModel="ngModel"
             required
             min="0"
+            [attr.aria-invalid]="priceModel.touched && priceModel.invalid"
+            [attr.aria-describedby]="
+              priceModel.touched && priceModel.invalid
+                ? 'product-price-error'
+                : null
+            "
           />
-        </label>
+        </app-form-field>
 
-        <label class="form-field">
-          <span>الاستطاعة بالواط *</span>
+        <app-form-field
+          class="form-field"
+          label="الاستطاعة بالواط *"
+          inputId="product-power"
+          [control]="powerModel.control"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال الاستطاعة.' },
+            { key: 'min', message: 'يجب ألا تقل الاستطاعة عن صفر.' }
+          ]"
+        >
           <input
+            id="product-power"
             type="number"
             name="powerWatts"
             [(ngModel)]="formModel.powerWatts"
+            #powerModel="ngModel"
             required
             min="0"
+            [attr.aria-invalid]="powerModel.touched && powerModel.invalid"
+            [attr.aria-describedby]="
+              powerModel.touched && powerModel.invalid
+                ? 'product-power-error'
+                : null
+            "
           />
-        </label>
+        </app-form-field>
 
-        <label class="form-field">
-          <span>كمية المخزون *</span>
+        <app-form-field
+          class="form-field"
+          label="كمية المخزون *"
+          inputId="product-stock"
+          [control]="stockModel.control"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال كمية المخزون.' },
+            { key: 'min', message: 'يجب ألا تقل الكمية عن صفر.' }
+          ]"
+        >
           <input
+            id="product-stock"
             type="number"
             name="stock"
             [(ngModel)]="formModel.stock"
+            #stockModel="ngModel"
             required
             min="0"
             step="1"
+            [attr.aria-invalid]="stockModel.touched && stockModel.invalid"
+            [attr.aria-describedby]="
+              stockModel.touched && stockModel.invalid
+                ? 'product-stock-error'
+                : null
+            "
           />
-        </label>
+        </app-form-field>
 
-        <label class="form-field">
-          <span>رابط الصورة *</span>
+        <app-form-field
+          class="form-field"
+          label="رابط الصورة *"
+          inputId="product-image"
+          [control]="imageModel.control"
+          [errors]="[
+            { key: 'required', message: 'يرجى إدخال رابط الصورة.' },
+            { key: 'url', message: 'يرجى إدخال رابط صورة صالح.' }
+          ]"
+        >
           <input
+            id="product-image"
             type="url"
             name="imageUrl"
             [(ngModel)]="formModel.imageUrl"
+            #imageModel="ngModel"
             required
             placeholder="https://example.com/product.jpg"
+            [attr.aria-invalid]="imageModel.touched && imageModel.invalid"
+            [attr.aria-describedby]="
+              imageModel.touched && imageModel.invalid
+                ? 'product-image-error'
+                : null
+            "
           />
-        </label>
+        </app-form-field>
 
-        <label class="form-field full-width">
-          <span>حالة المنتج</span>
-          <select name="isActive" [(ngModel)]="formModel.isActive">
+        <app-form-field
+          class="form-field full-width"
+          label="حالة المنتج"
+          inputId="product-active"
+          [control]="activeModel.control"
+        >
+          <select
+            id="product-active"
+            name="isActive"
+            [(ngModel)]="formModel.isActive"
+            #activeModel="ngModel"
+          >
             <option [ngValue]="true">فعّال</option>
             <option [ngValue]="false">غير فعّال</option>
           </select>
-        </label>
+        </app-form-field>
       </div>
 
       <footer class="form-actions">
-        <button
-          class="cancel-button"
+        <app-button
           type="button"
-          (click)="cancel.emit()"
+          variant="secondary"
+          (clicked)="cancel.emit()"
         >
           إلغاء
-        </button>
+        </app-button>
 
-        <button
-          class="primary-action"
+        <app-button
           type="submit"
           [disabled]="productForm.invalid"
         >
           {{ product() ? 'حفظ التعديلات' : 'إضافة المنتج' }}
-        </button>
+        </app-button>
       </footer>
     </form>
   </section>

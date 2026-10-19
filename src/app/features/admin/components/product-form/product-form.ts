@@ -8,20 +8,24 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Product } from '../../../store/models/product.model';
+import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
+import { Category } from '../../../catalog/models/category.model';
+import { Product } from '../../../catalog/models/product.model';
 
 export type ProductFormData = Omit<Product, 'id'>;
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, AppButtonComponent, FormFieldComponent],
   templateUrl: './product-form.html',
   styleUrl: './product-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductFormComponent {
   readonly product = input<Product | null>(null);
+  readonly categories = input.required<readonly Category[]>();
 
   readonly save = output<ProductFormData>();
   readonly cancel = output<void>();
@@ -43,7 +47,7 @@ export class ProductFormComponent {
             stock: product.stock,
             isActive: product.isActive,
           }
-        : this.createEmptyProduct();
+        : this.createEmptyProduct(this.categories()[0]?.id ?? '');
     });
   }
 
@@ -51,13 +55,13 @@ export class ProductFormComponent {
     this.save.emit({ ...this.formModel });
   }
 
-  private createEmptyProduct(): ProductFormData {
+  private createEmptyProduct(category = ''): ProductFormData {
     return {
       name: '',
       description: '',
       price: 0,
       imageUrl: '',
-      category: 'solar-panel',
+      category,
       powerWatts: 0,
       stock: 0,
       isActive: true,

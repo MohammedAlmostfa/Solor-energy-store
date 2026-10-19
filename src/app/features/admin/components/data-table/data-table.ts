@@ -16,6 +16,13 @@ export interface TableColumn {
   align?: 'start' | 'center' | 'end';
 }
 
+function hasOwnProperty<O extends object, K extends PropertyKey>(
+  value: O,
+  key: K,
+): value is O & Record<K, unknown> {
+  return Object.prototype.hasOwnProperty.call(value, key);
+}
+
 @Component({
   selector: 'app-data-table',
   standalone: true,
@@ -26,7 +33,7 @@ export interface TableColumn {
 })
 export class DataTableComponent {
   readonly columns = input.required<TableColumn[]>();
-  readonly rows = input.required<readonly unknown[]>();
+  readonly rows = input.required<readonly object[]>();
   readonly emptyMessage = input('لا توجد بيانات لعرضها');
 
   @ContentChildren(DataTableCellTemplateDirective)
@@ -38,11 +45,11 @@ export class DataTableComponent {
     );
   }
 
-  getCellValue(row: unknown, key: string): unknown {
-    if (typeof row !== 'object' || row === null) {
+  getCellValue(row: object, key: string): unknown {
+    if (!hasOwnProperty(row, key)) {
       return '';
     }
 
-    return (row as Record<string, unknown>)[key] ?? '';
+    return row[key] ?? '';
   }
 }

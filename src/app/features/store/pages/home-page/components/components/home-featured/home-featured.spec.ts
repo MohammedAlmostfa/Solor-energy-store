@@ -1,17 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomeFeatured } from './home-featured';
+import { provideRouter } from '@angular/router';
+import { HomeFeaturedComponent } from './home-featured';
 
-describe('HomeFeatured', () => {
-  let component: HomeFeatured;
-  let fixture: ComponentFixture<HomeFeatured>;
+describe('HomeFeaturedComponent', () => {
+  let component: HomeFeaturedComponent;
+  let fixture: ComponentFixture<HomeFeaturedComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeFeatured],
+      imports: [HomeFeaturedComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomeFeatured);
+    fixture = TestBed.createComponent(HomeFeaturedComponent);
+    fixture.componentRef.setInput('products', []);
+    fixture.componentRef.setInput('categoryLabels', {});
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

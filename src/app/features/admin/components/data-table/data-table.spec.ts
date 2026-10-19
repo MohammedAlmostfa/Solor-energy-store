@@ -1,21 +1,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DataTable } from './data-table';
+import { DataTableComponent } from './data-table';
 
-describe('DataTable', () => {
-  let component: DataTable;
-  let fixture: ComponentFixture<DataTable>;
+describe('DataTableComponent', () => {
+  let component: DataTableComponent;
+  let fixture: ComponentFixture<DataTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataTable],
+      imports: [DataTableComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DataTable);
+    fixture = TestBed.createComponent(DataTableComponent);
+    fixture.componentRef.setInput('columns', []);
+    fixture.componentRef.setInput('rows', []);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders values from object rows', () => {
+    fixture.componentRef.setInput('columns', [
+      { key: 'name', label: 'Name' },
+    ]);
+    fixture.componentRef.setInput('rows', [{ name: 'Solar panel' }]);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('tbody')?.textContent)
+      .toContain('Solar panel');
   });
 });

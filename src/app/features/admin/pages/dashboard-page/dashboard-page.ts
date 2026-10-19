@@ -7,31 +7,28 @@ import {
   signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
-import { ProductsService } from '../../../store/services/products';
-import {
-  Product,
-  ProductCategory,
-} from '../../../store/models/product.model';
+import { CategoriesService } from '../../../catalog/services/categories';
+import { ProductsService } from '../../../catalog/services/products';
+import { Product } from '../../../catalog/models/product.model';
 
-import { StatCardComponent } from '../../components/stat-card/stat-card';
 import {
   DataTableComponent,
   type TableColumn,
 } from '../../components/data-table/data-table';
 import { DataTableCellTemplateDirective } from
   '../../components/data-table/data-table-cell-template';
+import { StatCardComponent } from '../../components/stat-card/stat-card';
+import { OrdersService } from '../../services/orders';
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
   imports: [
     DecimalPipe,
-    RouterLink,
-    StatCardComponent,
     DataTableComponent,
     DataTableCellTemplateDirective,
+    StatCardComponent,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
@@ -39,9 +36,19 @@ import { DataTableCellTemplateDirective } from
 })
 export class DashboardPageComponent {
   private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
+  private readonly ordersService = inject(OrdersService);
 
-  readonly products = signal<Product[]>(
-    this.productsService.getProducts(),
+  readonly products = this.productsService.activeProducts;
+  readonly orders = this.ordersService.allOrders;
+
+  readonly totalProducts = computed(() => this.products().length);
+  readonly totalOrders = computed(() => this.orders().length);
+  readonly pendingOrders = computed(
+    () => this.orders().filter((order) => order.status === 'pending').length,
+  );
+  readonly completedOrders = computed(
+    () => this.orders().filter((order) => order.status === 'completed').length,
   );
 
   readonly inventoryColumns: TableColumn[] = [
@@ -52,23 +59,8 @@ export class DashboardPageComponent {
     { key: 'status', label: 'الحالة' },
   ];
 
-  readonly categoryLabels: Record<ProductCategory, string> = {
-    'solar-panel': 'ألواح شمسية',
-    inverter: 'عاكسات كهربائية',
-    battery: 'بطاريات',
-    accessory: 'ملحقات',
-  };
-
-  readonly totalProducts = computed(
-    () => this.products().length,
-  );
-
-  readonly totalStock = computed(() =>
-    this.products().reduce(
-      (total, product) => total + product.stock,
-      0,
-    ),
-  );
+  readonly categoryLabels = this.categoriesService.categoryLabels;
+  readonly inventorySearchTerm = signal('');
 
   readonly lowStockProducts = computed(() =>
     this.products().filter(
@@ -76,21 +68,21 @@ export class DashboardPageComponent {
     ),
   );
 
-  readonly lowStockCount = computed(
-    () => this.lowStockProducts().length,
-  );
+  readonly filteredLowStockProducts = computed(() => {
+    const search = this.inventorySearchTerm().trim().toLocaleLowerCase();
 
-  readonly outOfStockProducts = computed(() =>
-    this.products().filter(
-      (product) => product.stock === 0,
-    ),
-  );
+    return this.lowStockProducts().filter((product) => {
+      const category = this.categoryLabels()[product.category] ?? '';
+      return (
+        product.name.toLocaleLowerCase().includes(search) ||
+        category.toLocaleLowerCase().includes(search)
+      );
+    });
+  });
 
-  readonly inventoryValue = computed(() =>
-    this.products().reduce(
-      (total, product) => total + product.price * product.stock,
-      0,
-    ),
-  );
+  updateInventorySearch(event: Event): void {
+    if (event.target instanceof HTMLInputElement) {
+      this.inventorySearchTerm.set(event.target.value);
+    }
+  }
 }
-

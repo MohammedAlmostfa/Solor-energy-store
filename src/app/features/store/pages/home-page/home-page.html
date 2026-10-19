@@ -1,11 +1,11 @@
 
 <main class="home-page">
 <app-home-hero />
-<app-home-categories [categories]="categories" />
+<app-home-categories [categories]="categories()" />
 
 <app-home-featured
   [products]="featuredProducts()"
-  [categoryLabels]="categoryLabels"
+  [categoryLabels]="categoryLabels()"
   [cartFeedback]="cartFeedback()"
   (productAdded)="addToCart($event)"
 />

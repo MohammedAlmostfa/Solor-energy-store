@@ -51,13 +51,28 @@
               <h2>{{ item.product.name }}</h2>
 
               <p class="text-muted">
-                سعر الوحدة: {{ item.product.price }} $
+                سعر الوحدة عند الإضافة: {{ item.unitPrice }} $
               </p>
 
               <p class="cart-item__subtotal">
                 المجموع:
-                {{ item.product.price * item.quantity }} $
+                {{ item.unitPrice * item.quantity }} $
               </p>
+
+              @if (!item.productExists) {
+                <p class="cart-item__warning" role="alert">
+                  هذا المنتج لم يعد موجوداً في الكتالوج. احذفه للمتابعة.
+                </p>
+              } @else if (!item.isActive) {
+                <p class="cart-item__warning" role="alert">
+                  هذا المنتج غير متاح حالياً.
+                </p>
+              } @else if (item.quantity > item.currentStock) {
+                <p class="cart-item__warning" role="alert">
+                  الكمية المطلوبة تتجاوز المخزون الحالي ({{ item.currentStock }}).
+                  حدّث الكمية أو احذف المنتج.
+                </p>
+              }
             </div>
 
             <div class="cart-item__actions">
@@ -108,12 +123,23 @@
           <strong>{{ totalPrice() }} $</strong>
         </div>
 
-        <a
-          routerLink="/checkout"
-          class="button-link cart-summary__checkout"
-        >
-          متابعة إلى الدفع
-        </a>
+        @if (canCheckout()) {
+          <a
+            routerLink="/checkout"
+            class="button-link cart-summary__checkout"
+          >
+            متابعة إلى الدفع
+          </a>
+        } @else {
+          <app-button
+            class="cart-summary__checkout"
+            type="button"
+            [fullWidth]="true"
+            [disabled]="true"
+          >
+            عالج المنتجات غير المتاحة للمتابعة
+          </app-button>
+        }
       </aside>
     </div>
   }

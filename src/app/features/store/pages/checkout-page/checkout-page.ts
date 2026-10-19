@@ -40,6 +40,7 @@ export class CheckoutPage {
   readonly cartItems = this.cartService.items;
   readonly totalItems = this.cartService.totalItems;
   readonly totalPrice = this.cartService.totalPrice;
+  readonly canCheckout = this.cartService.canCheckout;
 
   readonly checkoutForm = this.formBuilder.nonNullable.group({
     fullName: [
@@ -82,11 +83,9 @@ export class CheckoutPage {
   submitOrder(): void {
     this.submitted = true;
 
-    if (this.checkoutForm.invalid) {
+    if (this.checkoutForm.invalid || !this.canCheckout()) {
       this.checkoutForm.markAllAsTouched();
       return;
     }
-
-
   }
 }

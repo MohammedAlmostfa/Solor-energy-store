@@ -8,7 +8,7 @@ import {
 import { RouterLink } from '@angular/router';
 
 import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
-import { Product } from '../../models/product.model';
+import { Product } from '../../../catalog/models/product.model';
 
 @Component({
   selector: 'app-product-card',

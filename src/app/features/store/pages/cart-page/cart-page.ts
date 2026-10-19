@@ -7,7 +7,7 @@ import {
 import { RouterLink } from '@angular/router';
 
 import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
-import { CartItem } from '../../models/cart-item.model';
+import { CartItemView } from '../../models/cart-item.model';
 import { CartQuantityOption } from '../../models/cart-quantity-option.model';
 import { CartService } from '../../services/cart.service';
 
@@ -25,10 +25,11 @@ export class CartPage {
   readonly items = this.cartService.items;
   readonly totalItems = this.cartService.totalItems;
   readonly totalPrice = this.cartService.totalPrice;
+  readonly canCheckout = this.cartService.canCheckout;
 
-  getQuantityOptions(item: CartItem): CartQuantityOption[] {
+  getQuantityOptions(item: CartItemView): CartQuantityOption[] {
     return Array.from(
-      { length: Math.max(0, item.product.stock) },
+      { length: Math.max(item.currentStock, item.quantity, 0) },
       (_, index) => {
         const quantity = index + 1;
 

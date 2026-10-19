@@ -16,8 +16,13 @@
 
   --color-success: #15803d;
   --color-danger: #b91c1c;
---color-success-background: #dcfce7;
---color-danger-background: #fee2e2;
+  --color-warning: #b45309;
+  --color-warning-background: #fef3c7;
+  --color-success-background: #dcfce7;
+  --color-danger-background: #fee2e2;
+  --color-on-primary: #243247;
+  --color-on-accent: #ffffff;
+  --color-on-danger: #ffffff;
   // Typography
   --font-family-base: 'Cairo', Tahoma, sans-serif;
 
@@ -61,4 +66,8 @@
 
   --color-text: #f1f5f9;
   --color-text-muted: #cbd5e1;
+  --color-warning: #fbbf24;
+  --color-warning-background: #422006;
+  --color-success-background: #14532d;
+  --color-danger-background: #7f1d1d;
 }

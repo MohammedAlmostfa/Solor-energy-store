@@ -6,14 +6,31 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-import { CategoriesService } from '../../services/categories';
+import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
+import { trimmedRequiredValidator } from '../../../../shared/validators/trimmed-required.validator';
+import { CategoriesService } from '../../../catalog/services/categories';
+import {
+  DataTableComponent,
+  type TableColumn,
+} from '../../components/data-table/data-table';
+import { DataTableCellTemplateDirective } from '../../components/data-table/data-table-cell-template';
+import { StatCardComponent } from '../../components/stat-card/stat-card';
 
 @Component({
   selector: 'app-categories-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    ReactiveFormsModule,
+    AppButtonComponent,
+    FormFieldComponent,
+    DataTableComponent,
+    DataTableCellTemplateDirective,
+    StatCardComponent,
+  ],
   templateUrl: './categories-page.html',
   styleUrl: './categories-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,9 +39,20 @@ export class CategoriesPageComponent {
   private readonly categoriesService = inject(CategoriesService);
 
   readonly categories = this.categoriesService.categoriesWithCounts;
+  readonly tableColumns: TableColumn[] = [
+    { key: 'name', label: 'اسم التصنيف' },
+    { key: 'productCount', label: 'عدد المنتجات' },
+    { key: 'actions', label: 'الإجراءات' },
+  ];
 
-  readonly searchTerm = signal('');
-  readonly categoryName = signal('');
+  readonly searchControl = new FormControl('', { nonNullable: true });
+  readonly searchTerm = toSignal(this.searchControl.valueChanges, {
+    initialValue: this.searchControl.value,
+  });
+  readonly categoryNameControl = new FormControl('', {
+    nonNullable: true,
+    validators: [trimmedRequiredValidator(), Validators.maxLength(80)],
+  });
   readonly editingId = signal<string | null>(null);
   readonly errorMessage = signal('');
 
@@ -47,24 +75,19 @@ export class CategoriesPageComponent {
     ),
   );
 
-  updateSearch(value: string): void {
-    this.searchTerm.set(value);
-  }
-
-  updateCategoryName(value: string): void {
-    this.categoryName.set(value);
+  clearErrorMessage(): void {
     this.errorMessage.set('');
   }
 
   startCreate(): void {
     this.editingId.set(null);
-    this.categoryName.set('');
+    this.categoryNameControl.reset('');
     this.errorMessage.set('');
   }
 
   startEdit(category: { id: string; name: string }): void {
     this.editingId.set(category.id);
-    this.categoryName.set(category.name);
+    this.categoryNameControl.setValue(category.name);
     this.errorMessage.set('');
   }
 
@@ -73,13 +96,13 @@ export class CategoriesPageComponent {
   }
 
   saveCategory(): void {
-    const name = this.categoryName().trim();
+    this.categoryNameControl.markAsTouched();
 
-    if (!name) {
-      this.errorMessage.set('يرجى إدخال اسم التصنيف.');
+    if (this.categoryNameControl.invalid) {
       return;
     }
 
+    const name = this.categoryNameControl.value.trim();
     const editingId = this.editingId();
 
     if (editingId) {

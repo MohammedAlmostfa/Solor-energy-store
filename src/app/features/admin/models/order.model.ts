@@ -16,9 +16,9 @@ export interface Order {
   status: OrderStatus;
 }
 
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  pending: 'قيد الانتظار',
-  processing: 'قيد التجهيز',
-  completed: 'مكتمل',
-  cancelled: 'ملغي',
-};
+export const ORDER_STATUS_OPTIONS = [
+  { value: 'pending', label: 'قيد الانتظار' },
+  { value: 'processing', label: 'قيد التجهيز' },
+  { value: 'completed', label: 'مكتمل' },
+  { value: 'cancelled', label: 'ملغي' },
+] satisfies readonly { value: OrderStatus; label: string }[];
