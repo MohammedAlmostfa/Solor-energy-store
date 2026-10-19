@@ -1,0 +1,104 @@
+
+<main class="login-page" dir="rtl">
+  <section class="login-panel">
+    <a class="brand" routerLink="/" aria-label="العودة إلى المتجر">
+      <span class="brand-icon" aria-hidden="true">☀</span>
+      <span>طاقة الشمس</span>
+    </a>
+
+    <div class="login-heading">
+      <span class="eyebrow">ADMINISTRATION</span>
+      <h1>مرحباً بعودتك</h1>
+      <p>سجّل دخولك للوصول إلى لوحة إدارة المتجر.</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="login()">
+      <div class="form-field">
+        <label for="email">البريد الإلكتروني</label>
+
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          required
+          email
+          autocomplete="username"
+          placeholder="admin@solar.com"
+        />
+      </div>
+
+      <div class="form-field">
+        <div class="password-label">
+          <label for="password">كلمة المرور</label>
+        </div>
+
+        <div class="password-input">
+          <input
+            id="password"
+            name="password"
+            [type]="isPasswordVisible() ? 'text' : 'password'"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password"
+            placeholder="أدخل كلمة المرور"
+          />
+
+          <button
+            class="visibility-button"
+            type="button"
+            [attr.aria-label]="
+              isPasswordVisible() ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'
+            "
+            (click)="togglePasswordVisibility()"
+          >
+            {{ isPasswordVisible() ? 'إخفاء' : 'إظهار' }}
+          </button>
+        </div>
+      </div>
+
+      @if (errorMessage()) {
+        <p class="error-message" role="alert">
+          {{ errorMessage() }}
+        </p>
+      }
+
+      <button class="login-button" type="submit">
+        تسجيل الدخول
+        <span aria-hidden="true">←</span>
+      </button>
+    </form>
+
+    <p class="login-footer">
+      بالمتابعة، أنت تدخل إلى مساحة إدارة المتجر.
+    </p>
+
+    <a class="back-link" routerLink="/">
+      العودة إلى المتجر
+    </a>
+  </section>
+
+  <aside class="login-visual" aria-label="طاقة الشمس">
+    <div class="visual-glow"></div>
+
+    <div class="visual-content">
+      <span class="visual-label">SMART ENERGY MANAGEMENT</span>
+
+      <div class="sun-illustration" aria-hidden="true">
+        <span class="sun-core">☀</span>
+      </div>
+
+      <h2>إدارة أذكى،<br />وطاقة لمستقبل أفضل.</h2>
+
+      <p>
+        تابع المنتجات والطلبات ونظّم عمليات متجرك
+        من مكان واحد.
+      </p>
+
+      <div class="visual-indicator">
+        <span></span>
+        نظام إدارة متجر طاقة الشمس
+      </div>
+    </div>
+  </aside>
+</main>

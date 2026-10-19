@@ -7,14 +7,32 @@ import {
   signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { ProductsService } from '../../../store/services/products';
-import { Product } from '../../../store/models/product.model';
+import {
+  Product,
+  ProductCategory,
+} from '../../../store/models/product.model';
+
+import { StatCardComponent } from '../../components/stat-card/stat-card';
+import {
+  DataTableComponent,
+  type TableColumn,
+} from '../../components/data-table/data-table';
+import { DataTableCellTemplateDirective } from
+  '../../components/data-table/data-table-cell-template';
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [
+    DecimalPipe,
+    RouterLink,
+    StatCardComponent,
+    DataTableComponent,
+    DataTableCellTemplateDirective,
+  ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,12 +40,34 @@ import { Product } from '../../../store/models/product.model';
 export class DashboardPageComponent {
   private readonly productsService = inject(ProductsService);
 
-  readonly products = signal<Product[]>(this.productsService.getProducts());
+  readonly products = signal<Product[]>(
+    this.productsService.getProducts(),
+  );
 
-  readonly totalProducts = computed(() => this.products().length);
+  readonly inventoryColumns: TableColumn[] = [
+    { key: 'product', label: 'المنتج' },
+    { key: 'category', label: 'التصنيف' },
+    { key: 'price', label: 'السعر' },
+    { key: 'stock', label: 'الكمية المتبقية' },
+    { key: 'status', label: 'الحالة' },
+  ];
+
+  readonly categoryLabels: Record<ProductCategory, string> = {
+    'solar-panel': 'ألواح شمسية',
+    inverter: 'عاكسات كهربائية',
+    battery: 'بطاريات',
+    accessory: 'ملحقات',
+  };
+
+  readonly totalProducts = computed(
+    () => this.products().length,
+  );
 
   readonly totalStock = computed(() =>
-    this.products().reduce((total, product) => total + product.stock, 0),
+    this.products().reduce(
+      (total, product) => total + product.stock,
+      0,
+    ),
   );
 
   readonly lowStockProducts = computed(() =>
@@ -36,8 +76,14 @@ export class DashboardPageComponent {
     ),
   );
 
+  readonly lowStockCount = computed(
+    () => this.lowStockProducts().length,
+  );
+
   readonly outOfStockProducts = computed(() =>
-    this.products().filter((product) => product.stock === 0),
+    this.products().filter(
+      (product) => product.stock === 0,
+    ),
   );
 
   readonly inventoryValue = computed(() =>
@@ -46,6 +92,5 @@ export class DashboardPageComponent {
       0,
     ),
   );
-
-  readonly lowStockCount = computed(() => this.lowStockProducts().length);
 }
+

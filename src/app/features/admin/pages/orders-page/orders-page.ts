@@ -8,17 +8,26 @@ import {
 } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
-import { OrdersService } from '../../services/orders';
 import {
-  Order,
-  OrderStatus,
-  ORDER_STATUS_LABELS,
-} from '../../models/order.model';
+  DataTableComponent,
+  type TableColumn,
+} from '../../components/data-table/data-table';
+import { DataTableCellTemplateDirective } from '../../components/data-table/data-table-cell-template';
+import { StatCardComponent } from '../../components/stat-card/stat-card';
+
+import { OrdersService } from '../../services/orders';
+import type { Order, OrderStatus } from '../../models/order.model';
 
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [DatePipe, DecimalPipe],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    DataTableComponent,
+    DataTableCellTemplateDirective,
+    StatCardComponent,
+  ],
   templateUrl: './orders-page.html',
   styleUrl: './orders-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,26 +36,53 @@ export class OrdersPageComponent {
   private readonly ordersService = inject(OrdersService);
 
   readonly orders = this.ordersService.allOrders;
+
   readonly searchTerm = signal('');
   readonly selectedStatus = signal<OrderStatus | 'all'>('all');
 
-  readonly statusLabels = ORDER_STATUS_LABELS;
+  readonly tableColumns: TableColumn[] = [
+    { key: 'orderNumber', label: 'رقم الطلب' },
+    { key: 'customer', label: 'العميل' },
+    { key: 'createdAt', label: 'تاريخ الطلب' },
+    { key: 'itemsCount', label: 'عدد المنتجات' },
+    { key: 'total', label: 'الإجمالي' },
+    { key: 'status', label: 'الحالة' },
+    { key: 'actions', label: 'تغيير الحالة' },
+  ];
 
-  readonly statusOptions: {
-    value: OrderStatus;
-    label: string;
-  }[] = [
+  readonly statusOptions: { value: OrderStatus; label: string }[] = [
     { value: 'pending', label: 'قيد الانتظار' },
     { value: 'processing', label: 'قيد التجهيز' },
     { value: 'completed', label: 'مكتمل' },
     { value: 'cancelled', label: 'ملغي' },
   ];
 
-  readonly filteredOrders = computed(() => {
-    const search = this.searchTerm()
-      .trim()
-      .toLocaleLowerCase();
+  readonly statusLabels: Record<OrderStatus, string> = {
+    pending: 'قيد الانتظار',
+    processing: 'قيد التجهيز',
+    completed: 'مكتمل',
+    cancelled: 'ملغي',
+  };
 
+  readonly totalOrders = computed(() => this.orders().length);
+
+  readonly pendingOrders = computed(
+    () =>
+      this.orders().filter((order) => order.status === 'pending').length,
+  );
+
+  readonly processingOrders = computed(
+    () =>
+      this.orders().filter((order) => order.status === 'processing').length,
+  );
+
+  readonly completedOrders = computed(
+    () =>
+      this.orders().filter((order) => order.status === 'completed').length,
+  );
+
+  readonly filteredOrders = computed(() => {
+    const search = this.searchTerm().trim().toLocaleLowerCase();
     const status = this.selectedStatus();
 
     return this.orders().filter((order) => {
@@ -63,61 +99,42 @@ export class OrdersPageComponent {
     });
   });
 
-  readonly totalOrders = computed(
-    () => this.orders().length,
-  );
-
-  readonly pendingOrders = computed(
-    () => this.orders().filter(
-      (order) => order.status === 'pending',
-    ).length,
-  );
-
-  readonly processingOrders = computed(
-    () => this.orders().filter(
-      (order) => order.status === 'processing',
-    ).length,
-  );
-
-  readonly completedOrders = computed(
-    () => this.orders().filter(
-      (order) => order.status === 'completed',
-    ).length,
-  );
-
   updateSearch(value: string): void {
     this.searchTerm.set(value);
   }
 
   updateStatusFilter(value: string): void {
-    const validStatuses: (OrderStatus | 'all')[] = [
-      'all',
-      'pending',
-      'processing',
-      'completed',
-      'cancelled',
-    ];
+    const isValidStatus =
+      value === 'all' ||
+      this.statusOptions.some((option) => option.value === value);
 
-    if (validStatuses.includes(value as OrderStatus | 'all')) {
-      this.selectedStatus.set(value as OrderStatus | 'all');
-    }
-  }
-
-  updateOrderStatus(order: Order, value: string): void {
-    const validStatuses: OrderStatus[] = [
-      'pending',
-      'processing',
-      'completed',
-      'cancelled',
-    ];
-
-    if (!validStatuses.includes(value as OrderStatus)) {
+    if (!isValidStatus) {
       return;
     }
 
-    this.ordersService.updateStatus(
-      order.id,
-      value as OrderStatus,
+    this.selectedStatus.set(value as OrderStatus | 'all');
+  }
+
+  getStatusLabel(status: OrderStatus): string {
+    return this.statusLabels[status];
+  }
+
+  updateOrderStatus(order: Order, value: string): void {
+    const isValidStatus = this.statusOptions.some(
+      (option) => option.value === value,
     );
+
+    if (!isValidStatus) {
+      return;
+    }
+
+    const status = value as OrderStatus;
+
+    if (status === order.status) {
+      return;
+    }
+
+    this.ordersService.updateStatus(order.id, status);
   }
 }
+

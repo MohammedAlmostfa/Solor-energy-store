@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
@@ -19,19 +20,10 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () =>
-      import('./layouts/admin-layout/admin-layout').then(
-        (m) => m.AdminLayoutComponent,
+    loadChildren: () =>
+      import('./features/admin/admin.routes').then(
+        (m) => m.ADMIN_ROUTES,
       ),
-    children: [
-      {
-        path: '',
-        loadChildren: () =>
-          import('./features/admin/admin.routes').then(
-            (m) => m.ADMIN_ROUTES,
-          ),
-      },
-    ],
   },
   {
     path: '**',

@@ -1,0 +1,57 @@
+
+<div class="data-table">
+  <div class="data-table__scroll">
+    <table class="data-table__table">
+      <thead>
+        <tr>
+          @for (column of columns(); track column.key) {
+            <th
+              scope="col"
+              [class.data-table__cell--center]="column.align === 'center'"
+              [class.data-table__cell--end]="column.align === 'end'"
+            >
+              {{ column.label }}
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (rows().length > 0) {
+          @for (row of rows(); track $index) {
+            <tr>
+              @for (column of columns(); track column.key) {
+                <td
+                  [class.data-table__cell--center]="column.align === 'center'"
+                  [class.data-table__cell--end]="column.align === 'end'"
+                >
+                  @if (getCellTemplate(column.key); as cellTemplate) {
+                    <ng-container
+                      [ngTemplateOutlet]="cellTemplate.template"
+                      [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        row: row,
+                        value: getCellValue(row, column.key)
+                      }"
+                    />
+                  } @else {
+                    {{ getCellValue(row, column.key) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td
+              class="data-table__empty"
+              [attr.colspan]="columns().length || 1"
+            >
+              {{ emptyMessage() }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

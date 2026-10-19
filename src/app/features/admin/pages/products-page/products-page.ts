@@ -7,25 +7,32 @@ import {
   signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
+import { AppButtonComponent } from '../../../../shared/components/app-button/app-button';
 import { ProductsService } from '../../../store/services/products';
 import {
   Product,
   ProductCategory,
 } from '../../../store/models/product.model';
+
+import { DataTableComponent, type TableColumn } from '../../components/data-table/data-table';
+import { DataTableCellTemplateDirective } from '../../components/data-table/data-table-cell-template';
 import {
   ProductFormComponent,
-  ProductFormData,
+  type ProductFormData,
 } from '../../components/product-form/product-form';
+import { StatCardComponent } from '../../components/stat-card/stat-card';
 
 @Component({
   selector: 'app-products-page',
   standalone: true,
   imports: [
     DecimalPipe,
-    FormsModule,
+    AppButtonComponent,
+    StatCardComponent,
     ProductFormComponent,
+    DataTableComponent,
+    DataTableCellTemplateDirective,
   ],
   templateUrl: './products-page.html',
   styleUrl: './products-page.scss',
@@ -36,12 +43,25 @@ export class ProductsPageComponent {
 
   readonly products = this.productsService.allProducts;
 
+  // Search and filters
   readonly searchTerm = signal('');
   readonly selectedCategory = signal<ProductCategory | 'all'>('all');
   readonly selectedStatus = signal<'all' | 'active' | 'inactive'>('all');
 
+  // Product form state
   readonly isFormOpen = signal(false);
   readonly editingProduct = signal<Product | null>(null);
+
+  // Table configuration
+  readonly tableColumns: TableColumn[] = [
+    { key: 'product', label: 'المنتج' },
+    { key: 'category', label: 'التصنيف' },
+    { key: 'price', label: 'السعر' },
+    { key: 'powerWatts', label: 'الاستطاعة' },
+    { key: 'stock', label: 'المخزون' },
+    { key: 'status', label: 'الحالة' },
+    { key: 'actions', label: 'الإجراءات' },
+  ];
 
   readonly categoryLabels: Record<ProductCategory, string> = {
     'solar-panel': 'ألواح شمسية',
@@ -50,6 +70,7 @@ export class ProductsPageComponent {
     accessory: 'ملحقات',
   };
 
+  // Filtered products
   readonly filteredProducts = computed(() => {
     const search = this.searchTerm().trim().toLocaleLowerCase();
     const category = this.selectedCategory();
@@ -73,6 +94,7 @@ export class ProductsPageComponent {
     });
   });
 
+  // Summary statistics
   readonly activeProductsCount = computed(
     () => this.products().filter((product) => product.isActive).length,
   );
@@ -81,13 +103,14 @@ export class ProductsPageComponent {
     () => this.products().filter((product) => !product.isActive).length,
   );
 
-  readonly totalStock = computed(
-    () => this.products().reduce(
+  readonly totalStock = computed(() =>
+    this.products().reduce(
       (total, product) => total + product.stock,
       0,
     ),
   );
 
+  // Filter handlers
   updateSearch(value: string): void {
     this.searchTerm.set(value);
   }
@@ -100,6 +123,7 @@ export class ProductsPageComponent {
     this.selectedStatus.set(value as 'all' | 'active' | 'inactive');
   }
 
+  // Form handlers
   openCreateForm(): void {
     this.editingProduct.set(null);
     this.isFormOpen.set(true);
@@ -127,6 +151,7 @@ export class ProductsPageComponent {
     this.closeForm();
   }
 
+  // Product actions
   toggleProductStatus(product: Product): void {
     const { id, ...changes } = product;
 
@@ -146,3 +171,4 @@ export class ProductsPageComponent {
     }
   }
 }
+
